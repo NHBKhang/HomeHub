@@ -1,24 +1,53 @@
 import { useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
-import { UserRound, Mail, LockKeyhole, ArrowRight, House } from "lucide-react";
-
-import { apiRequest } from "../../services/api";
+import {
+    UserRound, Mail, LockKeyhole, ArrowRight, House,
+    Eye, EyeOff,
+} from "lucide-react";
 import { useUser } from "../../contexts/UserContext";
 import "./Auth.css";
 import useDocumentTitle from "../../hooks/useDocuments";
+import userService from "../../services/userSerivce";
 
 export default function Register() {
     useDocumentTitle();
     const navigate = useNavigate();
     const { user, userLoading } = useUser();
 
-    const [fullName, setFullName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
+    const [userData, setUserData] = useState({
+        username: "",
+        first_name: "",
+        last_name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+    });
+
+    const [show, setShow] = useState({
+        password: false,
+        confirm: false,
+    });
+
+    const updateUserData = (event) => {
+        const { name, value } = event.target;
+
+        setUserData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    const updateShow = (field, value) => {
+        setShow((prev) => ({
+            ...prev,
+            [field]: typeof value === "function"
+                ? value(prev[field])
+                : value,
+        }));
+    };
     if (userLoading) {
         return <div className="auth-loading">Đang kiểm tra tài khoản...</div>;
     }
@@ -27,16 +56,16 @@ export default function Register() {
         return <Navigate to="/" replace />;
     }
 
-    async function handleSubmit(event) {
+    const submitForm = async (event) => {
         event.preventDefault();
         setError("");
 
-        if (password.length < 8) {
+        if (userData.password.length < 8) {
             setError("Mật khẩu phải có ít nhất 8 ký tự.");
             return;
         }
 
-        if (password !== confirmPassword) {
+        if (userData.password !== userData.confirmPassword) {
             setError("Mật khẩu xác nhận không khớp.");
             return;
         }
@@ -44,29 +73,35 @@ export default function Register() {
         setLoading(true);
 
         try {
-            await apiRequest("/api/auth/register", {
-                method: "POST",
-                body: JSON.stringify({
-                    full_name: fullName.trim(),
-                    email: email.trim(),
-                    password,
-                }),
+            await userService.register({
+                username: userData.username.trim(),
+                first_name: userData.first_name.trim(),
+                last_name: userData.last_name.trim(),
+                email: userData.email.trim(),
+                password: userData.password,
             });
 
             navigate("/login", {
                 replace: true,
-                state: { registered: true, email },
+                state: {
+                    registered: true,
+                    username: userData.username.trim(),
+                },
             });
         } catch (err) {
-            setError(
-                err.status === 409
-                    ? "Email này đã được sử dụng."
-                    : err.message || "Không thể tạo tài khoản. Vui lòng thử lại."
-            );
+            if (err.status === 409) {
+                setError("Username hoặc email đã được sử dụng.");
+            } else if (err.status === 422) {
+                setError("Thông tin đăng ký không hợp lệ. Vui lòng kiểm tra lại.");
+            } else {
+                setError(
+                    err.message || "Không thể tạo tài khoản. Vui lòng thử lại."
+                );
+            }
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     return (
         <main className="auth-page">
@@ -111,19 +146,62 @@ export default function Register() {
                         Điền thông tin bên dưới để bắt đầu sử dụng HomeHub.
                     </p>
 
-                    <form className="auth-form" onSubmit={handleSubmit}>
-                        <label htmlFor="register-name">Họ và tên</label>
+                    <form className="auth-form" onSubmit={submitForm}>
+                        <label htmlFor="register-username">Tên đăng nhập</label>
                         <div className="auth-input-wrap">
                             <UserRound size={18} />
                             <input
-                                id="register-name"
+                                id="register-username"
+                                name="username"
                                 type="text"
-                                autoComplete="name"
-                                placeholder="Nguyễn Văn A"
-                                value={fullName}
-                                onChange={(event) => setFullName(event.target.value)}
+                                autoComplete="username"
+                                placeholder="username"
+                                value={userData.username}
+                                onChange={updateUserData}
+                                minLength={3}
+                                maxLength={50}
+                                pattern="[A-Za-z0-9_]+"
+                                title="Tên đăng nhập chỉ được chứa chữ cái không dấu, chữ số và dấu gạch dưới."
                                 required
                             />
+                        </div>
+
+                        <div className="auth-name-row">
+                            <div className="auth-name-field">
+                                <label htmlFor="register-last-name">Họ</label>
+                                <div className="auth-input-wrap">
+                                    <UserRound size={18} />
+                                    <input
+                                        id="register-last-name"
+                                        name="last_name"
+                                        type="text"
+                                        autoComplete="family-name"
+                                        placeholder="Nguyễn"
+                                        value={userData.last_name}
+                                        onChange={updateUserData}
+                                        maxLength={100}
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="auth-name-field">
+                                <label htmlFor="register-first-name">Tên</label>
+                                <div className="auth-input-wrap">
+                                    <UserRound size={18} />
+                                    <input
+                                        id="register-first-name"
+                                        name="first_name"
+                                        type="text"
+                                        autoComplete="given-name"
+                                        placeholder="Văn A"
+                                        value={userData.first_name}
+                                        onChange={updateUserData}
+                                        maxLength={100}
+                                        required
+                                    />
+                                </div>
+                            </div>
                         </div>
 
                         <label htmlFor="register-email">Email</label>
@@ -131,11 +209,12 @@ export default function Register() {
                             <Mail size={18} />
                             <input
                                 id="register-email"
+                                name="email"
                                 type="email"
                                 autoComplete="email"
                                 placeholder="you@example.com"
-                                value={email}
-                                onChange={(event) => setEmail(event.target.value)}
+                                value={userData.email}
+                                onChange={updateUserData}
                                 required
                             />
                         </div>
@@ -143,31 +222,65 @@ export default function Register() {
                         <label htmlFor="register-password">Mật khẩu</label>
                         <div className="auth-input-wrap">
                             <LockKeyhole size={18} />
+
                             <input
                                 id="register-password"
-                                type="password"
+                                name="password"
+                                type={show.password ? "text" : "password"}
                                 autoComplete="new-password"
                                 placeholder="Ít nhất 8 ký tự"
-                                value={password}
-                                onChange={(event) => setPassword(event.target.value)}
+                                value={userData.password}
+                                onChange={updateUserData}
                                 minLength={8}
                                 required
                             />
+
+                            <button
+                                type="button"
+                                className="auth-password-toggle"
+                                onClick={() =>
+                                    updateShow("password", (prev) => !prev)
+                                }
+                                aria-label={show.password ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                                aria-pressed={show.password}
+                            >
+                                {show.password ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
                         </div>
 
-                        <label htmlFor="register-confirm-password">Xác nhận mật khẩu</label>
+                        <label htmlFor="register-confirm-password">
+                            Xác nhận mật khẩu
+                        </label>
                         <div className="auth-input-wrap">
                             <LockKeyhole size={18} />
+
                             <input
                                 id="register-confirm-password"
-                                type="password"
+                                name="confirmPassword"
+                                type={show.confirm ? "text" : "password"}
                                 autoComplete="new-password"
                                 placeholder="Nhập lại mật khẩu"
-                                value={confirmPassword}
-                                onChange={(event) => setConfirmPassword(event.target.value)}
+                                value={userData.confirm}
+                                onChange={updateUserData}
                                 minLength={8}
                                 required
                             />
+
+                            <button
+                                type="button"
+                                className="auth-password-toggle"
+                                onClick={() =>
+                                    updateShow("confirm", (prev) => !prev)
+                                }
+                                aria-label={
+                                    show.confirm
+                                        ? "Ẩn mật khẩu xác nhận"
+                                        : "Hiện mật khẩu xác nhận"
+                                }
+                                aria-pressed={show.confirm}
+                            >
+                                {show.confirm ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
                         </div>
 
                         {error && (

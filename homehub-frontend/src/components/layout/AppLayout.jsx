@@ -36,7 +36,7 @@ export default function AppLayout() {
         );
     };
 
-    const handleLogout = async () => {
+    const onLogout = async () => {
         try {
             await logout();
         } catch (error) {
@@ -51,7 +51,7 @@ export default function AppLayout() {
             <Sidebar
                 user={user}
                 loading={userLoading}
-                onLogout={handleLogout}
+                onLogout={onLogout}
             />
 
             <div className="app-main">

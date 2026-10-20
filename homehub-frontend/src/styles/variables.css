@@ -10,6 +10,11 @@
     --sidebar-width: 246px;
     --topbar-height: 73px;
 
+    --auth-accent: #6366f1;
+    --auth-accent-dark: #4f46e5;
+    --auth-text: #172033;
+    --auth-muted: #778197;
+
     --font-body: "DM Sans", sans-serif;
     --font-heading: "Manrope", sans-serif;
 
