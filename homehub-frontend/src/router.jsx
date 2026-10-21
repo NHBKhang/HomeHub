@@ -10,6 +10,7 @@ import Expenses from "./pages/Expenses/Expenses";
 import Settings from "./pages/Settings/Settings";
 import NotFound from "./pages/NotFound/NotFound";
 import RequireAuth from "./pages/Auth/RequireAuth";
+import Profile from "./pages/Profile/Profile";
 
 const router = createBrowserRouter([
     {
@@ -39,6 +40,10 @@ const router = createBrowserRouter([
             {
                 path: "expenses",
                 element: <Expenses />,
+            },
+            {
+                path: "profile",
+                element: <Profile />,
             },
             {
                 path: "settings",

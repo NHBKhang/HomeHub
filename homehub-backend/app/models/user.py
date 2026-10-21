@@ -47,5 +47,5 @@ class User(BaseModel):
     )
 
     @property
-    def get_full_name(self) -> str:
+    def full_name(self) -> str:
         return f"{self.last_name or ''} {self.first_name or ''}".strip()

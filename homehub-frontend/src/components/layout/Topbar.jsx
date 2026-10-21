@@ -15,12 +15,14 @@ import {
 } from "lucide-react";
 
 import "./styles/Topbar.css";
+import { useTheme } from "../../contexts/ThemeContext";
 
 const pageInfo = {
     "/": { title: "Tổng quan", icon: LayoutDashboard },
     "/devices": { title: "Thiết bị", icon: MonitorSmartphone },
     "/tasks": { title: "Công việc", icon: CheckSquare },
     "/expenses": { title: "Chi tiêu", icon: Wallet },
+    "/profile": { title: "Hồ sơ", icon: UserRound },
     "/settings": { title: "Cài đặt", icon: Settings },
 };
 
@@ -34,9 +36,10 @@ function getInitials(name = "") {
         .toUpperCase() || "U";
 }
 
-export default function Topbar({ user, theme, onToggleTheme }) {
+export default function Topbar({ user }) {
     const location = useLocation();
     const navigate = useNavigate();
+    const { theme, toggleTheme } = useTheme();
     const [search, setSearch] = useState("");
 
     const page = pageInfo[location.pathname] || {
@@ -53,7 +56,6 @@ export default function Topbar({ user, theme, onToggleTheme }) {
         const keyword = search.trim();
         if (!keyword) return;
 
-        // Đưa từ khóa vào URL để trang cần tìm kiếm có thể xử lý.
         navigate(`/devices?search=${encodeURIComponent(keyword)}`);
     }
 
@@ -94,7 +96,7 @@ export default function Topbar({ user, theme, onToggleTheme }) {
                 <button
                     type="button"
                     className="topbar-icon-button"
-                    onClick={onToggleTheme}
+                    onClick={toggleTheme}
                     aria-label={
                         theme === "dark"
                             ? "Chuyển sang giao diện sáng"
@@ -120,7 +122,7 @@ export default function Topbar({ user, theme, onToggleTheme }) {
                 <button
                     type="button"
                     className="topbar-user"
-                    onClick={() => navigate("/settings")}
+                    onClick={() => navigate("/profile")}
                     title="Thông tin tài khoản"
                 >
                     <span className="topbar-user__avatar">
@@ -133,7 +135,7 @@ export default function Topbar({ user, theme, onToggleTheme }) {
 
                     <span className="topbar-user__info">
                         <strong>{name}</strong>
-                        <small>{user?.role === "admin" ? "Quản trị viên" : "Tài khoản"}</small>
+                        <small>{user?.is_superuser === true ? "Quản trị viên" : "Tài khoản"}</small>
                     </span>
 
                     <UserRound className="topbar-user__profile-icon" size={16} />

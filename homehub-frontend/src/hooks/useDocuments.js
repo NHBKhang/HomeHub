@@ -6,6 +6,7 @@ const pageTitles = {
     "/devices": "Thiết bị",
     "/tasks": "Công việc",
     "/expenses": "Chi tiêu",
+    "/profile": "Hồ sơ",
     "/settings": "Cài đặt",
     "/login": "Đăng nhập",
     "/register": "Đăng ký",

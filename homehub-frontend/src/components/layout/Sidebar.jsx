@@ -81,6 +81,19 @@ export default function Sidebar({ user, loading, onLogout }) {
                 <p className="sidebar-section__label">HỆ THỐNG</p>
 
                 <NavLink
+                    to="/profile"
+                    className={({ isActive }) =>
+                        `sidebar-link${isActive ? " is-active" : ""}`
+                    }
+                >
+                    <span className="sidebar-link__icon">
+                        <UserRound size={19} strokeWidth={1.9} />
+                    </span>
+                    <span className="sidebar-link__label">Hồ sơ</span>
+                    <span className="sidebar-link__indicator" />
+                </NavLink>
+
+                <NavLink
                     to="/settings"
                     className={({ isActive }) =>
                         `sidebar-link${isActive ? " is-active" : ""}`
@@ -104,12 +117,12 @@ export default function Sidebar({ user, loading, onLogout }) {
                     {accountMenuOpen && (
                         <div className="account-menu">
                             <NavLink
-                                to="/settings"
+                                to="/profile"
                                 className="account-menu__item"
                                 onClick={() => setAccountMenuOpen(false)}
                             >
                                 <UserRound size={17} />
-                                Hồ sơ & cài đặt
+                                Hồ sơ
                             </NavLink>
 
                             <button

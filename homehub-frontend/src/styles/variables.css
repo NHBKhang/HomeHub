@@ -7,112 +7,346 @@
 
     color-scheme: light;
 
+    /* Layout */
     --sidebar-width: 246px;
     --topbar-height: 73px;
 
-    --auth-accent: #6366f1;
-    --auth-accent-dark: #4f46e5;
-    --auth-text: #172033;
-    --auth-muted: #778197;
-
+    /* Typography */
     --font-body: "DM Sans", sans-serif;
     --font-heading: "Manrope", sans-serif;
 
+    /* Brand */
     --purple: #685fe0;
     --purple-hover: #554bc9;
     --purple-soft: #f0efff;
     --purple-border: #e0ddff;
 
+    /* Status */
     --success: #2db78b;
     --warning: #e7a640;
     --danger: #ef7188;
     --info: #5494e8;
 
+    /* Radius */
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
     --radius-xl: 20px;
 
-    --shadow-sm: 0 2px 8px rgba(40, 56, 88, 0.04);
-    --shadow-md: 0 8px 24px rgba(40, 56, 88, 0.07);
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgb(40 56 88 / 4%);
+    --shadow-md: 0 8px 24px rgb(40 56 88 / 7%);
 
+    /* Motion */
     --transition-fast: 160ms ease;
     --transition-normal: 220ms ease;
 
+    /* Focus */
+    --focus-ring: rgb(104 95 224 / 22%);
+
+    /* Not found */
     --not-found-accent: #6366f1;
-    --not-found-accent-soft: rgba(99, 102, 241, 0.12);
+    --not-found-accent-soft: rgb(99 102 241 / 12%);
 }
 
-/* LIGHT THEME */
-
+/* ==================================================
+   LIGHT THEME
+================================================== */
 .app-layout[data-theme="light"] {
     color-scheme: light;
 
-    --bg: #f6f7fb;
+    /* Backgrounds */
+    --bg: #f5f7fc;
     --surface: #ffffff;
-    --surface-secondary: #f8f9fc;
-    --surface-hover: #f2f3fa;
+    --surface-secondary: #f8f9fd;
+    --surface-hover: #f0f2fa;
 
-    --text: #293146;
-    --text-strong: #272e42;
-    --text-secondary: #687286;
-    --text-muted: #929bad;
+    /* Text */
+    --text: #343c50;
+    --text-strong: #20283a;
+    --text-secondary: #626d83;
+    --text-muted: #8993a7;
 
-    --border: #edf0f5;
-    --border-strong: #e3e7f0;
+    /* Borders */
+    --border: #e3e8f2;
+    --border-strong: #d5dceb;
 
-    --sidebar-bg: #ffffff;
-    --sidebar-text: #7e8799;
-    --sidebar-heading: #272e43;
-    --sidebar-muted: #a0a8b8;
-    --sidebar-hover: #f8f7ff;
-    --sidebar-active: #f0efff;
-
-    --topbar-bg: rgba(255, 255, 255, 0.92);
+    /* Inputs */
     --input-bg: #ffffff;
-    --input-border: #e9edf4;
+    --input-border: #dce2ee;
+    --input-disabled: #f0f2f8;
 
-    --card-shadow: 0 2px 7px rgba(40, 56, 88, 0.025);
+    /* Layout */
+    --sidebar-bg: #ffffff;
+    --sidebar-text: #50596d;
+    --sidebar-heading: #20283a;
+    --sidebar-muted: #8993a7;
+    --sidebar-hover: #f5f5ff;
+    --sidebar-active: #eeefff;
 
-    --table-divider: #f0f2f7;
-    --progress-track: #e9ebf4;
+    --topbar-bg: rgb(255 255 255 / 94%);
+    --card-shadow: 0 3px 12px rgb(35 48 80 / 4.5%);
+    --table-divider: #edf0f6;
+    --progress-track: #e7eaf4;
+    --overlay: rgb(22 30 52 / 46%);
 
-    --overlay: rgba(30, 36, 58, 0.42);
+    /* Focus */
+    --focus-ring: rgb(91 95 239 / 22%);
+
+    /* Status surfaces */
+    --success-bg: #eaf8f0;
+    --success-border: #cdebd9;
+    --success-text: #18794e;
+
+    --danger-bg: #fff0f1;
+    --danger-border: #f4d4d8;
+    --danger-text: #b9384a;
+
+    --warning-bg: #fff6e5;
+    --warning-border: #f1dfb9;
+    --warning-text: #96630c;
+
+    --info-bg: #edf5ff;
+    --info-border: #d5e7ff;
+    --info-text: #2868b2;
+
+    /* Admin badge */
+    --admin-bg: #eeefff;
+    --admin-text: #504fc0;
+
+    /* Notes */
+    --note-bg: #f4f3ff;
+    --note-border: #e4e1ff;
+    --note-text: #5554a4;
+
+    /* Icons and controls */
+    --icon-muted: #858ca0;
+    --icon-surface: #f0f2fa;
+    --button-muted-bg: #f0f2f8;
+    --toggle-off: #dfe3ec;
+
+    /* Segmented controls */
+    --segmented-bg: #f0f2f8;
+    --segmented-selected: #ffffff;
+
+    /* Control shadows */
+    --control-shadow: 0 1px 4px rgb(28 39 76 / 10%);
+
+    /* Reset action */
+    --reset-bg: #f5f7fc;
+    --reset-hover-border: #c9cdfa;
+
+    /* Profile compatibility aliases */
+    --profile-accent: var(--purple);
+    --profile-accent-hover: var(--purple-hover);
+    --profile-accent-soft: var(--purple-soft);
+    --profile-text: var(--text-strong);
+    --profile-muted: #747f94;
+    --profile-border: var(--border);
+    --profile-surface: var(--surface);
+    --profile-background: var(--bg);
+    --profile-success: var(--success-text);
+    --profile-danger: var(--danger-text);
+    --profile-info-icon: var(--icon-surface);
+    --profile-success-bg: var(--success-bg);
+    --profile-success-border: var(--success-border);
+    --profile-success-text: var(--success-text);
+    --profile-danger-bg: var(--danger-bg);
+    --profile-danger-border: var(--danger-border);
+    --profile-danger-text: var(--danger-text);
+    --profile-admin-bg: var(--admin-bg);
+    --profile-admin-text: var(--admin-text);
+    --profile-note-bg: var(--note-bg);
+    --profile-note-border: var(--note-border);
+    --profile-note-text: var(--note-text);
+    --profile-icon-muted: var(--icon-muted);
+    --profile-focus-ring: var(--focus-ring);
+    --profile-avatar-border: var(--admin-bg);
+    --profile-separator: var(--table-divider);
+
+    /* Settings compatibility aliases */
+    --settings-accent: var(--purple);
+    --settings-accent-hover: var(--purple-hover);
+    --settings-accent-soft: var(--purple-soft);
+    --settings-text: var(--text-strong);
+    --settings-muted: #747f94;
+    --settings-border: var(--border);
+    --settings-surface: var(--surface);
+    --settings-background: var(--bg);
+    --settings-success: var(--success-text);
+    --settings-row-icon: var(--icon-surface);
+    --settings-row-separator: var(--table-divider);
+    --settings-toggle-off: var(--toggle-off);
+    --settings-segmented-bg: var(--segmented-bg);
+    --settings-segmented-selected: var(--segmented-selected);
+    --settings-control-bg: var(--input-bg);
+    --settings-control-border: var(--input-border);
+    --settings-control-shadow: var(--control-shadow);
+    --settings-notice-bg: var(--success-bg);
+    --settings-notice-border: var(--success-border);
+    --settings-reset-bg: var(--reset-bg);
+    --settings-reset-hover-border: var(--reset-hover-border);
+    --settings-focus-ring: var(--focus-ring);
+    --settings-danger: var(--danger-text);
+
+    /* Auth compatibility */
+    --auth-accent: #6366f1;
+    --auth-accent-dark: #4f46e5;
+    --auth-text: var(--text-strong);
+    --auth-muted: #778197;
 }
 
-/* DARK THEME */
-
+/* ==================================================
+   DARK THEME
+================================================== */
 .app-layout[data-theme="dark"] {
     color-scheme: dark;
 
+    /* Backgrounds */
     --bg: #101522;
     --surface: #171e2d;
-    --surface-secondary: #1c2435;
-    --surface-hover: #252e42;
+    --surface-secondary: #1c2536;
+    --surface-hover: #252f43;
 
+    /* Text */
     --text: #dce3ef;
-    --text-strong: #f1f5fb;
-    --text-secondary: #aab5c8;
-    --text-muted: #8995aa;
+    --text-strong: #f0f4fc;
+    --text-secondary: #b0bbce;
+    --text-muted: #8b97ad;
 
-    --border: #293347;
-    --border-strong: #374258;
+    /* Borders */
+    --border: #303b50;
+    --border-strong: #414d64;
 
-    --sidebar-bg: #0c111d;
-    --sidebar-text: #aab5c8;
-    --sidebar-heading: #f1f5fb;
-    --sidebar-muted: #7f8ba0;
-    --sidebar-hover: #1a2232;
-    --sidebar-active: #272647;
-
-    --topbar-bg: rgba(23, 30, 45, 0.94);
+    /* Inputs */
     --input-bg: #111827;
-    --input-border: #303b50;
+    --input-border: #354158;
+    --input-disabled: #202a3d;
 
-    --card-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+    /* Layout */
+    --sidebar-bg: #0c111d;
+    --sidebar-text: #b0bbce;
+    --sidebar-heading: #f0f4fc;
+    --sidebar-muted: #8793a9;
+    --sidebar-hover: #1a2233;
+    --sidebar-active: #29294c;
 
-    --table-divider: #293347;
-    --progress-track: #30394d;
+    --topbar-bg: rgb(23 30 45 / 94%);
+    --card-shadow: 0 4px 14px rgb(0 0 0 / 14%);
+    --table-divider: #293448;
+    --progress-track: #303b50;
+    --overlay: rgb(0 0 0 / 68%);
 
-    --overlay: rgba(0, 0, 0, 0.65);
+    /* Brand adjustments for dark surfaces */
+    --purple: #8585ff;
+    --purple-hover: #a0a0ff;
+    --purple-soft: #29294c;
+    --purple-border: #41416d;
+
+    /* Focus */
+    --focus-ring: rgb(133 133 255 / 30%);
+
+    /* Status surfaces */
+    --success: #55d6a0;
+    --success-bg: #15372f;
+    --success-border: #245744;
+    --success-text: #75dfae;
+
+    --danger: #ff8295;
+    --danger-bg: #3b222d;
+    --danger-border: #62313e;
+    --danger-text: #ff9aa8;
+
+    --warning-bg: #3a3020;
+    --warning-border: #62502e;
+    --warning-text: #f0c36d;
+
+    --info-bg: #1b304a;
+    --info-border: #2b4a70;
+    --info-text: #8fc1ff;
+
+    /* Admin badge */
+    --admin-bg: #29294c;
+    --admin-text: #b0afff;
+
+    /* Notes */
+    --note-bg: #222541;
+    --note-border: #38375f;
+    --note-text: #c1beff;
+
+    /* Icons and controls */
+    --icon-muted: #a0acc1;
+    --icon-surface: #222c40;
+    --button-muted-bg: #222b3d;
+    --toggle-off: #46516a;
+
+    /* Segmented controls */
+    --segmented-bg: #111827;
+    --segmented-selected: #303b50;
+
+    /* Control shadows */
+    --control-shadow: 0 1px 4px rgb(0 0 0 / 20%);
+
+    /* Reset action */
+    --reset-bg: #202a3d;
+    --reset-hover-border: #686bd4;
+
+    /* Profile compatibility aliases */
+    --profile-accent: var(--purple);
+    --profile-accent-hover: var(--purple-hover);
+    --profile-accent-soft: var(--purple-soft);
+    --profile-text: var(--text-strong);
+    --profile-muted: var(--text-muted);
+    --profile-border: var(--border);
+    --profile-surface: var(--surface);
+    --profile-background: var(--bg);
+    --profile-success: var(--success);
+    --profile-danger: var(--danger);
+    --profile-info-icon: var(--icon-surface);
+    --profile-success-bg: var(--success-bg);
+    --profile-success-border: var(--success-border);
+    --profile-success-text: var(--success-text);
+    --profile-danger-bg: var(--danger-bg);
+    --profile-danger-border: var(--danger-border);
+    --profile-danger-text: var(--danger-text);
+    --profile-admin-bg: var(--admin-bg);
+    --profile-admin-text: var(--admin-text);
+    --profile-note-bg: var(--note-bg);
+    --profile-note-border: var(--note-border);
+    --profile-note-text: var(--note-text);
+    --profile-icon-muted: var(--icon-muted);
+    --profile-focus-ring: var(--focus-ring);
+    --profile-avatar-border: var(--admin-bg);
+    --profile-separator: var(--table-divider);
+
+    /* Settings compatibility aliases */
+    --settings-accent: var(--purple);
+    --settings-accent-hover: var(--purple-hover);
+    --settings-accent-soft: var(--purple-soft);
+    --settings-text: var(--text-strong);
+    --settings-muted: var(--text-muted);
+    --settings-border: var(--border);
+    --settings-surface: var(--surface);
+    --settings-background: var(--bg);
+    --settings-success: var(--success-text);
+    --settings-row-icon: var(--icon-surface);
+    --settings-row-separator: var(--table-divider);
+    --settings-toggle-off: var(--toggle-off);
+    --settings-segmented-bg: var(--segmented-bg);
+    --settings-segmented-selected: var(--segmented-selected);
+    --settings-control-bg: var(--input-bg);
+    --settings-control-border: var(--input-border);
+    --settings-control-shadow: var(--control-shadow);
+    --settings-notice-bg: var(--success-bg);
+    --settings-notice-border: var(--success-border);
+    --settings-reset-bg: var(--reset-bg);
+    --settings-reset-hover-border: var(--reset-hover-border);
+    --settings-focus-ring: var(--focus-ring);
+    --settings-danger: var(--danger-text);
+
+    /* Auth compatibility */
+    --auth-accent: #8585ff;
+    --auth-accent-dark: #a0a0ff;
+    --auth-text: var(--text-strong);
+    --auth-muted: var(--text-muted);
 }

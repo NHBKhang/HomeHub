@@ -1,40 +1,22 @@
-import { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+
+import { useNavigate, Outlet } from "react-router-dom";
 
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
+import Footer from "./Footer";
+
 import { useUser } from "../../contexts/UserContext";
+
 import "./styles/AppLayout.css";
 import useDocumentTitle from "../../hooks/useDocuments";
+import { useTheme } from "../../contexts/ThemeContext";
 
 export default function AppLayout() {
     useDocumentTitle();
+
+    const { theme } = useTheme();
     const navigate = useNavigate();
     const { user, userLoading, logout } = useUser();
-
-    const [theme, setTheme] = useState(() => {
-        try {
-            return localStorage.getItem("homehub-theme") === "dark"
-                ? "dark"
-                : "light";
-        } catch {
-            return "light";
-        }
-    });
-
-    useEffect(() => {
-        try {
-            localStorage.setItem("homehub-theme", theme);
-        } catch {
-            // Bỏ qua nếu trình duyệt không cho phép lưu.
-        }
-    }, [theme]);
-
-    const toggleTheme = () => {
-        setTheme((current) =>
-            current === "light" ? "dark" : "light"
-        );
-    };
 
     const onLogout = async () => {
         try {
@@ -57,13 +39,13 @@ export default function AppLayout() {
             <div className="app-main">
                 <Topbar
                     user={user}
-                    theme={theme}
-                    onToggleTheme={toggleTheme}
                 />
 
                 <main className="page-content">
                     <Outlet />
                 </main>
+
+                <Footer />
             </div>
         </div>
     );
