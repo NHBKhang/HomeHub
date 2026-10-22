@@ -27,6 +27,9 @@ import useDocumentTitle from "../../hooks/useDocuments";
 import Button from "../../components/ui/Button";
 import Input from "../../components/ui/Input";
 import "./Profile.css";
+import userService from "../../services/userSerivce";
+import Modal from "../../components/ui/Modal";
+import Message from "../../components/ui/Message";
 
 function formatDate(value) {
     if (!value) return "Chưa cập nhật";
@@ -123,7 +126,7 @@ export default function Profile() {
     } = useUser();
 
     const [refreshing, setRefreshing] = useState(false);
-    const [pageError, setPageError] = useState("");
+    const [message, setMessage] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [saving, setSaving] = useState(false);
 
@@ -132,6 +135,10 @@ export default function Profile() {
         last_name: "",
         email: "",
     });
+
+    function showMessage(type, text) {
+        setMessage({ type, text });
+    }
 
     useEffect(() => {
         if (!user) return;
@@ -151,15 +158,13 @@ export default function Profile() {
 
     async function refresh() {
         setRefreshing(true);
-        setPageError("");
+        setMessage(null);
 
         try {
             await loadUser();
             setIsEditing(false);
         } catch (error) {
-            setPageError(
-                error.message || "Không thể tải lại thông tin tài khoản."
-            );
+            showMessage("danger", error.message || "Không thể tải lại thông tin tài khoản.");
         } finally {
             setRefreshing(false);
         }
@@ -176,7 +181,7 @@ export default function Profile() {
 
     async function handleSave(event) {
         event.preventDefault();
-        setPageError("");
+        setMessage(null);
 
         const payload = {
             first_name: formData.first_name.trim(),
@@ -185,36 +190,20 @@ export default function Profile() {
         };
 
         if (!payload.first_name || !payload.last_name || !payload.email) {
-            setPageError("Vui lòng nhập đầy đủ thông tin.");
+            showMessage("danger", "Vui lòng nhập đầy đủ thông tin.");
             return;
         }
 
         setSaving(true);
 
         try {
-            /*
-             * TODO: Tích hợp API cập nhật hồ sơ.
-             *
-             * Ví dụ:
-             * await apiRequest("/api/v1/users/me", {
-             *     method: "PATCH",
-             *     headers: {
-             *         "Content-Type": "application/json",
-             *     },
-             *     body: JSON.stringify(payload),
-             * });
-             *
-             * Chỉ thông báo thành công sau khi API xác nhận cập nhật.
-             */
+            await userService.updateProfile(payload);
+            await loadUser();
 
-            setPageError(
-                "Chức năng cập nhật chưa được kết nối API. " +
-                "Thông tin chưa được lưu."
-            );
+            setIsEditing(false);
         } catch (error) {
-            setPageError(
-                error.message || "Không thể cập nhật thông tin cá nhân."
-            );
+            showMessage("danger", error.message || "Không thể cập nhật thông tin cá nhân.");
+
         } finally {
             setSaving(false);
         }
@@ -273,10 +262,12 @@ export default function Profile() {
                     </div>
                 </header>
 
-                {(pageError || userError) && (
-                    <div className="profile-alert" role="alert">
-                        {pageError || userError}
-                    </div>
+                {(message?.text || userError) && (
+                    <Message
+                        variant={message?.text ? message.type : "danger"}
+                        onClose={() => setMessage(null)}
+                        message={message?.text || userError}
+                    />
                 )}
 
                 <section className="profile-overview">
@@ -299,8 +290,8 @@ export default function Profile() {
                         <div className="profile-badges">
                             <span
                                 className={`profile-badge ${user.is_active
-                                        ? "profile-badge--active"
-                                        : "profile-badge--inactive"
+                                    ? "profile-badge--active"
+                                    : "profile-badge--inactive"
                                     }`}
                             >
                                 <span className="profile-badge__dot" />
@@ -496,119 +487,85 @@ export default function Profile() {
                     </Button>
                 </section>
 
-                {isEditing && (
-                    <div
-                        className="profile-modal-overlay"
-                        onClick={(event) => {
-                            if (
-                                event.target === event.currentTarget &&
-                                !saving
-                            ) {
-                                setIsEditing(false);
-                            }
-                        }}
-                    >
-                        <section
-                            className="profile-modal"
-                            role="dialog"
-                            aria-modal="true"
-                            aria-labelledby="profile-modal-title"
-                        >
-                            <div className="profile-modal__header">
-                                <div>
-                                    <span className="profile-modal__eyebrow">
-                                        ACCOUNT SETTINGS
-                                    </span>
-                                    <h2 id="profile-modal-title">
-                                        Chỉnh sửa hồ sơ
-                                    </h2>
-                                    <p>
-                                        Cập nhật thông tin cá nhân của bạn.
-                                    </p>
-                                </div>
-
-                                <button
-                                    type="button"
-                                    className="profile-modal__close"
-                                    onClick={() => setIsEditing(false)}
-                                    disabled={saving}
-                                    aria-label="Đóng cửa sổ"
-                                >
-                                    <X size={20} />
-                                </button>
-                            </div>
-
-                            <form
-                                className="profile-edit-form"
-                                onSubmit={handleSave}
+                <Modal
+                    isOpen={isEditing}
+                    onClose={() => setIsEditing(false)}
+                    eyebrow="ACCOUNT SETTINGS"
+                    title="Chỉnh sửa hồ sơ"
+                    description="Cập nhật thông tin cá nhân của bạn."
+                    size="md"
+                    isLoading={saving}
+                    footer={
+                        <>
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                size="md"
+                                disabled={saving}
+                                onClick={() => setIsEditing(false)}
                             >
-                                <div className="profile-edit-form__row">
-                                    <Input
-                                        label="Họ"
-                                        name="last_name"
-                                        value={formData.last_name}
-                                        onChange={handleChange}
-                                        placeholder="Nhập họ"
-                                        autoComplete="family-name"
-                                        required
-                                        disabled={saving}
-                                        className="profile-edit-form__field"
-                                    />
+                                Hủy
+                            </Button>
 
-                                    <Input
-                                        label="Tên"
-                                        name="first_name"
-                                        value={formData.first_name}
-                                        onChange={handleChange}
-                                        placeholder="Nhập tên"
-                                        autoComplete="given-name"
-                                        required
-                                        disabled={saving}
-                                        className="profile-edit-form__field"
-                                    />
-                                </div>
+                            <Button
+                                type="submit"
+                                form="profile-edit-form"
+                                variant="primary"
+                                size="md"
+                                loading={saving}
+                                disabled={saving}
+                                startIcon={<Save size={16} />}
+                            >
+                                {saving ? "Đang lưu..." : "Lưu thay đổi"}
+                            </Button>
+                        </>
+                    }
+                >
+                    <form
+                        id="profile-edit-form"
+                        className="profile-edit-form"
+                        onSubmit={handleSave}
+                    >
+                        <div className="profile-edit-form__row">
+                            <Input
+                                label="Họ"
+                                name="last_name"
+                                value={formData.last_name}
+                                onChange={handleChange}
+                                placeholder="Nhập họ"
+                                autoComplete="family-name"
+                                required
+                                disabled={saving}
+                                className="profile-edit-form__field"
+                            />
 
-                                <Input
-                                    label="Email"
-                                    type="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    placeholder="name@example.com"
-                                    autoComplete="email"
-                                    required
-                                    disabled={saving}
-                                    className="profile-edit-form__field"
-                                />
+                            <Input
+                                label="Tên"
+                                name="first_name"
+                                value={formData.first_name}
+                                onChange={handleChange}
+                                placeholder="Nhập tên"
+                                autoComplete="given-name"
+                                required
+                                disabled={saving}
+                                className="profile-edit-form__field"
+                            />
+                        </div>
 
-                                <div className="profile-modal__footer">
-                                    <Button
-                                        type="button"
-                                        variant="secondary"
-                                        size="md"
-                                        disabled={saving}
-                                        onClick={() => setIsEditing(false)}
-                                    >
-                                        Hủy
-                                    </Button>
-
-                                    <Button
-                                        type="submit"
-                                        variant="primary"
-                                        size="md"
-                                        loading={saving}
-                                        disabled={saving}
-                                        startIcon={<Save size={16} />}
-                                    >
-                                        {saving
-                                            ? "Đang lưu..."
-                                            : "Lưu thay đổi"}
-                                    </Button>
-                                </div>
-                            </form>
-                        </section>
-                    </div>
-                )}
+                        <Input
+                            label="Email"
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            placeholder="name@example.com"
+                            autoComplete="email"
+                            required
+                            disabled={saving}
+                            className="profile-edit-form__field"
+                        />
+                    </form>
+                </Modal>
             </div>
         </main>
     );

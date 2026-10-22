@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import or_
 from pwdlib import PasswordHash
 from app.models.user import User
-from app.schemas.user import UserCreate
+from app.schemas.user import UserCreate, UserUpdate
 from app.core.security import verify_password, create_access_token
 from app.core.config import settings
 from datetime import timedelta
@@ -15,6 +15,7 @@ import jwt
 password_hash = PasswordHash.recommended()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
+
 
 def create_user_service(db: Session, user_data: UserCreate) -> User:
     username = user_data.username.strip()
@@ -109,3 +110,67 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         raise credentials_exception
 
     return user
+
+
+def update_user_profile(
+        db: Session,
+        current_user: User,
+        profile_data: UserUpdate,
+) -> User:
+    update_data = profile_data.model_dump(exclude_unset=True)
+
+    if not update_data:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Bạn chưa cung cấp thông tin cần cập nhật.",
+        )
+
+    # Kiểm tra email
+    if "email" in update_data:
+        email = update_data["email"]
+
+        if email is None:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="Email không được để trống.",
+            )
+
+        email = str(email)
+
+        existing_user = (
+            db.query(User)
+            .filter(
+                User.email == email,
+                User.id != current_user.id,
+            )
+            .first()
+        )
+
+        if existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Email này đã được sử dụng bởi tài khoản khác.",
+            )
+
+        update_data["email"] = email
+
+    # Chỉ cho phép cập nhật các trường hồ sơ
+    allowed_fields = {"first_name", "last_name", "email"}
+
+    for field, value in update_data.items():
+        if field not in allowed_fields:
+            continue
+
+        setattr(current_user, field, value)
+
+    try:
+        db.commit()
+        db.refresh(current_user)
+    except Exception:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Không thể cập nhật hồ sơ. Vui lòng thử lại.",
+        )
+
+    return current_user

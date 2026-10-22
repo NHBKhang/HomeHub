@@ -1,0 +1,90 @@
+{
+    "sidebar": 
+    {
+        "brandSubtitle": "SMART LIVING",
+        "workspace": "KHÔNG GIAN CỦA BẠN",
+        "overview": "Tổng quan",
+        "devices": "Thiết bị",
+        "tasks": "Công việc",
+        "expenses": "Chi tiêu",
+        "system": "HỆ THỐNG",
+        "profile": "Hồ sơ",
+        "settings": "Cài đặt",
+        "activeStatus": "HomeHub đang hoạt động",
+        "user": "Người dùng",
+        "admin": "Quản trị viên",
+        "member": "Thành viên",
+        "loading": "Đang tải...",
+        "connecting": "Đang kết nối",
+        "logout": "Đăng xuất"
+    },
+    "common": 
+    {
+        "save": "Lưu thay đổi",
+        "cancel": "Hủy",
+        "reset": "Đặt lại",
+        "loading": "Đang tải...",
+        "search": "Tìm kiếm",
+        "language": "Ngôn ngữ",
+        "vietnamese": "Tiếng Việt",
+        "english": "Tiếng Anh",
+        "lightTheme": "Sáng",
+        "darkTheme": "Tối"
+    },
+    "navigation": 
+    {
+        "dashboard": "Tổng quan",
+        "devices": "Thiết bị",
+        "rooms": "Phòng",
+        "automations": "Tự động hóa",
+        "settings": "Cài đặt",
+        "profile": "Hồ sơ cá nhân",
+        "logout": "Đăng xuất"
+    },
+    "profile": 
+    {
+        "title": "Hồ sơ cá nhân",
+        "fullName": "Họ và tên",
+        "email": "Email",
+        "phone": "Số điện thoại",
+        "update": "Cập nhật hồ sơ"
+    },
+    "settings": {
+        "title": "Cài đặt",
+        "pageDescription": "Tùy chỉnh trải nghiệm và cách HomeHub hoạt động theo nhu cầu của bạn.",
+        "save": "Lưu cài đặt",
+        "confirmed": "Đã xác nhận",
+        "sessionSaveNotice": "Cài đặt đã được xác nhận trong phiên hiện tại. Kết nối API để lưu lâu dài.",
+        "appearance": "Giao diện",
+        "appearanceDescription": "Điều chỉnh cách HomeHub hiển thị.",
+        "theme": "Chủ đề",
+        "themeDescription": "Chọn giao diện phù hợp với bạn.",
+        "compactMode": "Chế độ gọn",
+        "compactModeDescription": "Giảm khoảng cách để hiển thị nhiều nội dung hơn.",
+        "language": "Ngôn ngữ",
+        "languageDescription": "Ngôn ngữ hiển thị của ứng dụng.",
+        "notifications": "Thông báo",
+        "notificationsDescription": "Chọn những sự kiện bạn muốn nhận thông báo.",
+        "deviceNotifications": "Trạng thái thiết bị",
+        "deviceNotificationsDescription": "Thông báo khi thiết bị kết nối hoặc mất kết nối.",
+        "securityNotifications": "Cảnh báo bảo mật",
+        "securityNotificationsDescription": "Thông báo về hoạt động bảo mật quan trọng.",
+        "systemNotifications": "Thông báo hệ thống",
+        "systemNotificationsDescription": "Nhận thông tin về bảo trì và cập nhật.",
+        "sound": "Âm thanh",
+        "soundDescription": "Phát âm thanh khi có thông báo.",
+        "privacy": "Quyền riêng tư",
+        "privacyDescription": "Kiểm soát thông tin hiển thị trên giao diện.",
+        "showDeviceStatus": "Hiển thị trạng thái thiết bị",
+        "showDeviceStatusDescription": "Cho phép hiển thị trạng thái trực tuyến trên trang tổng quan.",
+        "experienceTitle": "Trải nghiệm của bạn",
+        "experienceDescription": "Tùy chỉnh HomeHub để quản lý thiết bị thông minh thuận tiện hơn.",
+        "enabled": "Đang bật",
+        "disabled": "Đang tắt",
+        "resetTitle": "Khôi phục mặc định",
+        "resetDescription": "Đưa các tùy chọn trên trang này về giá trị ban đầu.",
+        "reset": "Khôi phục cài đặt",
+        "resetConfirm": "Bạn muốn khôi phục tất cả cài đặt?",
+        "confirm": "Xác nhận"
+    }
+}

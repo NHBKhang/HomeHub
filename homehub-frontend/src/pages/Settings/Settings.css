@@ -22,7 +22,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 24px;
-    margin-bottom: 28px;
+    margin-bottom: 20px;
 }
 
 .settings-heading h1 {
@@ -40,53 +40,10 @@
     line-height: 1.7;
 }
 
-.settings-save {
-    display: inline-flex;
-    flex-shrink: 0;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    min-height: 42px;
-    padding: 0 17px;
-    color: #ffffff;
-    background: var(--settings-accent);
-    border: 1px solid var(--settings-accent);
-    border-radius: 10px;
-    font-family: inherit;
-    font-size: 12px;
-    font-weight: 650;
-    cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease;
-}
-
-.settings-save:hover {
-    background: var(--settings-accent-hover);
-    border-color: var(--settings-accent-hover);
-}
-
 .settings-page button:focus-visible,
 .settings-page select:focus-visible {
     outline: 3px solid var(--settings-focus-ring);
     outline-offset: 3px;
-}
-
-.settings-notice {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 20px;
-    padding: 13px 15px;
-    border-radius: 10px;
-    font-size: 13px;
-    line-height: 1.7;
-    color: var(--settings-success);
-    background: var(--settings-notice-bg);
-    border-color: var(--settings-notice-border);
-}
-
-.settings-notice svg {
-    flex-shrink: 0;
-    margin-top: 2px;
 }
 
 .settings-layout {
@@ -486,10 +443,6 @@
 
     .settings-heading p {
         font-size: 12px;
-    }
-
-    .settings-save {
-        width: 100%;
     }
 
     .settings-main,

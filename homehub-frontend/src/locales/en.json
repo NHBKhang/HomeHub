@@ -1,0 +1,90 @@
+{
+    "sidebar": 
+    {
+        "brandSubtitle": "SMART LIVING",
+        "workspace": "YOUR SPACE",
+        "overview": "Overview",
+        "devices": "Devices",
+        "tasks": "Tasks",
+        "expenses": "Expenses",
+        "system": "SYSTEM",
+        "profile": "Profile",
+        "settings": "Settings",
+        "activeStatus": "HomeHub is active",
+        "user": "User",
+        "admin": "Administrator",
+        "member": "Member",
+        "loading": "Loading...",
+        "connecting": "Connecting",
+        "logout": "Log out"
+    },
+    "common": 
+    {
+        "save": "Save changes",
+        "cancel": "Cancel",
+        "reset": "Reset",
+        "loading": "Loading...",
+        "search": "Search",
+        "language": "Language",
+        "vietnamese": "Vietnamese",
+        "english": "English",
+        "lightTheme": "Light",
+        "darkTheme": "Dark"
+    },
+    "navigation": 
+    {
+        "dashboard": "Dashboard",
+        "devices": "Devices",
+        "rooms": "Rooms",
+        "automations": "Automations",
+        "settings": "Settings",
+        "profile": "Profile",
+        "logout": "Log out"
+    },
+    "profile": 
+    {
+        "title": "Profile",
+        "fullName": "Full name",
+        "email": "Email",
+        "phone": "Phone number",
+        "update": "Update profile"
+    },
+    "settings": {
+        "title": "Settings",
+        "pageDescription": "Customize your HomeHub experience to suit your needs.",
+        "save": "Save settings",
+        "confirmed": "Confirmed",
+        "sessionSaveNotice": "Settings have been confirmed for the current session. Connect an API to save them permanently.",
+        "appearance": "Appearance",
+        "appearanceDescription": "Adjust how HomeHub looks.",
+        "theme": "Theme",
+        "themeDescription": "Choose the appearance that suits you.",
+        "compactMode": "Compact mode",
+        "compactModeDescription": "Reduce spacing to display more content.",
+        "language": "Language",
+        "languageDescription": "Choose the application's display language.",
+        "notifications": "Notifications",
+        "notificationsDescription": "Choose which events you want to receive notifications for.",
+        "deviceNotifications": "Device status",
+        "deviceNotificationsDescription": "Get notified when a device connects or disconnects.",
+        "securityNotifications": "Security alerts",
+        "securityNotificationsDescription": "Get notified about important security activity.",
+        "systemNotifications": "System notifications",
+        "systemNotificationsDescription": "Receive maintenance and update information.",
+        "sound": "Sound",
+        "soundDescription": "Play a sound when a notification arrives.",
+        "privacy": "Privacy",
+        "privacyDescription": "Control the information displayed in the interface.",
+        "showDeviceStatus": "Show device status",
+        "showDeviceStatusDescription": "Display online status on the dashboard.",
+        "experienceTitle": "Your experience",
+        "experienceDescription": "Customize HomeHub to manage your smart devices more conveniently.",
+        "enabled": "Enabled",
+        "disabled": "Disabled",
+        "resetTitle": "Restore defaults",
+        "resetDescription": "Restore the options on this page to their initial values.",
+        "reset": "Reset settings",
+        "resetConfirm": "Do you want to reset all settings?",
+        "confirm": "Confirm"
+    }
+}

@@ -2,6 +2,7 @@
 import { apiRequest } from "./api";
 
 const AUTH_URL = "/api/v1/auth";
+const USERS_URL = "/api/v1/users";
 const TOKEN_KEY = "access_token";
 
 export const userService = {
@@ -51,10 +52,26 @@ export const userService = {
             return null;
         }
 
-        return apiRequest(`${AUTH_URL}/me`, {
+        return apiRequest(`${USERS_URL}/me`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
+        });
+    },
+
+    async updateProfile(profileData) {
+        const token = localStorage.getItem(TOKEN_KEY);
+
+        if (!token) {
+            return null;
+        }
+
+        return apiRequest(`${USERS_URL}/me`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+            method: "PATCH",
+            body: JSON.stringify(profileData),
         });
     },
 

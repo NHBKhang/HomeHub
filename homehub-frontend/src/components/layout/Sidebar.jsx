@@ -1,5 +1,7 @@
+
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
     House,
     LayoutDashboard,
@@ -15,29 +17,33 @@ import {
 import "./styles/Sidebar.css";
 
 const menuItems = [
-    { label: "Tổng quan", path: "/", icon: LayoutDashboard, end: true },
-    { label: "Thiết bị", path: "/devices", icon: MonitorSmartphone },
-    { label: "Công việc", path: "/tasks", icon: CheckSquare },
-    { label: "Chi tiêu", path: "/expenses", icon: Wallet },
+    { label: "overview", path: "/", icon: LayoutDashboard, end: true },
+    { label: "devices", path: "/devices", icon: MonitorSmartphone },
+    { label: "tasks", path: "/tasks", icon: CheckSquare },
+    { label: "expenses", path: "/expenses", icon: Wallet },
 ];
 
 function getInitials(name = "") {
-    return name
-        .trim()
-        .split(/\s+/)
-        .slice(-2)
-        .map((part) => part[0])
-        .join("")
-        .toUpperCase() || "U";
+    return (
+        name
+            .trim()
+            .split(/\s+/)
+            .slice(-2)
+            .map((part) => part[0])
+            .join("")
+            .toUpperCase() || "U"
+    );
 }
 
 export default function Sidebar({ user, loading, onLogout }) {
     const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+    const { t } = useTranslation();
 
-    const name = user?.full_name || user?.username || "Người dùng";
-    const email = user?.email || "Chưa có email";
+    const name = user?.full_name || user?.username || t("sidebar.user");
     const avatar = user?.avatar_url;
-    const role = user?.role === "admin" ? "Quản trị viên" : "Thành viên";
+    const role = user?.is_superuser === true
+        ? t("sidebar.admin")
+        : t("sidebar.member");
 
     return (
         <aside className="sidebar">
@@ -48,12 +54,14 @@ export default function Sidebar({ user, loading, onLogout }) {
 
                 <span className="sidebar-brand__text">
                     Home<span>Hub</span>
-                    <small>SMART LIVING</small>
+                    <small>{t("sidebar.brandSubtitle")}</small>
                 </span>
             </NavLink>
 
             <div className="sidebar-section">
-                <p className="sidebar-section__label">KHÔNG GIAN CỦA BẠN</p>
+                <p className="sidebar-section__label">
+                    {t("sidebar.workspace")}
+                </p>
 
                 <nav className="sidebar-nav">
                     {menuItems.map(({ label, path, icon: Icon, end }) => (
@@ -69,7 +77,9 @@ export default function Sidebar({ user, loading, onLogout }) {
                                 <Icon size={19} strokeWidth={1.9} />
                             </span>
 
-                            <span className="sidebar-link__label">{label}</span>
+                            <span className="sidebar-link__label">
+                                {t(`sidebar.${label}`)}
+                            </span>
 
                             <span className="sidebar-link__indicator" />
                         </NavLink>
@@ -78,7 +88,9 @@ export default function Sidebar({ user, loading, onLogout }) {
             </div>
 
             <div className="sidebar-section sidebar-section--settings">
-                <p className="sidebar-section__label">HỆ THỐNG</p>
+                <p className="sidebar-section__label">
+                    {t("sidebar.system")}
+                </p>
 
                 <NavLink
                     to="/profile"
@@ -89,7 +101,9 @@ export default function Sidebar({ user, loading, onLogout }) {
                     <span className="sidebar-link__icon">
                         <UserRound size={19} strokeWidth={1.9} />
                     </span>
-                    <span className="sidebar-link__label">Hồ sơ</span>
+                    <span className="sidebar-link__label">
+                        {t("sidebar.profile")}
+                    </span>
                     <span className="sidebar-link__indicator" />
                 </NavLink>
 
@@ -102,7 +116,9 @@ export default function Sidebar({ user, loading, onLogout }) {
                     <span className="sidebar-link__icon">
                         <Settings size={19} strokeWidth={1.9} />
                     </span>
-                    <span className="sidebar-link__label">Cài đặt</span>
+                    <span className="sidebar-link__label">
+                        {t("sidebar.settings")}
+                    </span>
                     <span className="sidebar-link__indicator" />
                 </NavLink>
             </div>
@@ -110,7 +126,7 @@ export default function Sidebar({ user, loading, onLogout }) {
             <div className="sidebar-bottom">
                 <div className="sidebar-status">
                     <span className="sidebar-status__dot" />
-                    <span>HomeHub đang hoạt động</span>
+                    <span>{t("sidebar.activeStatus")}</span>
                 </div>
 
                 <div className="account-wrap">
@@ -122,7 +138,7 @@ export default function Sidebar({ user, loading, onLogout }) {
                                 onClick={() => setAccountMenuOpen(false)}
                             >
                                 <UserRound size={17} />
-                                Hồ sơ
+                                {t("sidebar.profile")}
                             </NavLink>
 
                             <button
@@ -131,7 +147,7 @@ export default function Sidebar({ user, loading, onLogout }) {
                                 onClick={onLogout}
                             >
                                 <LogOut size={17} />
-                                Đăng xuất
+                                {t("sidebar.logout")}
                             </button>
                         </div>
                     )}
@@ -153,9 +169,15 @@ export default function Sidebar({ user, loading, onLogout }) {
 
                         <span className="account-card__info">
                             <strong>
-                                {loading ? "Đang tải..." : name}
+                                {loading
+                                    ? t("sidebar.loading")
+                                    : name}
                             </strong>
-                            <small>{loading ? "Đang kết nối" : role}</small>
+                            <small>
+                                {loading
+                                    ? t("sidebar.connecting")
+                                    : role}
+                            </small>
                         </span>
 
                         <ChevronUp

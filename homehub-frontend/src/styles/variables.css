@@ -70,6 +70,7 @@
     /* Borders */
     --border: #e3e8f2;
     --border-strong: #d5dceb;
+    --border-color: #d3dcee;
 
     /* Inputs */
     --input-bg: #ffffff;
@@ -216,7 +217,8 @@
 
     /* Borders */
     --border: #303b50;
-    --border-strong: #414d64;
+    --border-strong: #d5dceb;
+    --border-color: #2c3444;
 
     /* Inputs */
     --input-bg: #111827;

@@ -1,4 +1,3 @@
-
 import {
     createContext,
     useCallback,
@@ -10,6 +9,7 @@ import {
 import i18n from "../i18n";
 
 const LanguageContext = createContext(null);
+const SUPPORTED_LANGUAGES = ["vi", "en"];
 
 export function LanguageProvider({ children }) {
     const [language, setLanguageState] = useState(
@@ -29,21 +29,15 @@ export function LanguageProvider({ children }) {
     }, []);
 
     const setLanguage = useCallback(async (nextLanguage) => {
-        if (!["vi", "en"].includes(nextLanguage)) {
+        if (!SUPPORTED_LANGUAGES.includes(nextLanguage)) {
             return;
         }
 
         await i18n.changeLanguage(nextLanguage);
-
-        try {
-            localStorage.setItem("homehub-language", nextLanguage);
-        } catch { }
     }, []);
 
     return (
-        <LanguageContext.Provider
-            value={{ language, setLanguage }}
-        >
+        <LanguageContext.Provider value={{ language, setLanguage }}>
             {children}
         </LanguageContext.Provider>
     );

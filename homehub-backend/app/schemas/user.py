@@ -24,3 +24,10 @@ class UserRead(BaseModel):
     is_superuser: bool
     created_at: datetime
     updated_at: datetime
+
+class UserUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    first_name: str | None = Field(default=None, max_length=100)
+    last_name: str | None = Field(default=None, max_length=100)
+    email: EmailStr | None = None

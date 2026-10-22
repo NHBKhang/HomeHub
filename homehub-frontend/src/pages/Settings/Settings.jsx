@@ -1,5 +1,6 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
     Bell,
     Check,
@@ -21,6 +22,7 @@ import useDocumentTitle from "../../hooks/useDocuments";
 import "./Settings.css";
 import { useTheme } from "../../contexts/ThemeContext";
 import Button from "../../components/ui/Button";
+import Message from "../../components/ui/Message";
 
 const defaultSettings = {
     theme: "light",
@@ -40,13 +42,11 @@ function SettingsSection({ icon: Icon, title, description, children }) {
                 <span className="settings-card__icon">
                     <Icon size={20} />
                 </span>
-
                 <div>
                     <h2>{title}</h2>
                     <p>{description}</p>
                 </div>
             </div>
-
             <div className="settings-card__body">{children}</div>
         </section>
     );
@@ -60,18 +60,14 @@ function SettingsRow({
     last = false,
 }) {
     return (
-        <div
-            className={`settings-row${last ? " settings-row--last" : ""}`}
-        >
+        <div className={`settings-row${last ? " settings-row--last" : ""}`}>
             <span className="settings-row__icon">
                 <Icon size={19} />
             </span>
-
             <div className="settings-row__content">
                 <strong>{title}</strong>
                 <p>{description}</p>
             </div>
-
             <div className="settings-row__control">{children}</div>
         </div>
     );
@@ -95,18 +91,56 @@ function SettingsToggle({ checked, onChange, label }) {
 export default function Settings() {
     useDocumentTitle();
 
+    const { t, i18n } = useTranslation();
     const { theme, toggleTheme } = useTheme();
-    const [settings, setSettings] = useState(defaultSettings);
+
+    const language = i18n.resolvedLanguage || i18n.language || "vi";
+
+    const [settings, setSettings] = useState({
+        ...defaultSettings,
+        theme,
+        language,
+    });
     const [saved, setSaved] = useState(false);
     const [resetting, setResetting] = useState(false);
+
+    useEffect(() => {
+        setSettings((current) => ({
+            ...current,
+            theme,
+        }));
+    }, [theme]);
+
+    useEffect(() => {
+        setSettings((current) => ({
+            ...current,
+            language,
+        }));
+    }, [language]);
 
     function updateSetting(key, value) {
         setSettings((current) => ({
             ...current,
             [key]: value,
         }));
-
         setSaved(false);
+    }
+
+    function handleThemeChange(nextTheme) {
+        if (theme !== nextTheme) {
+            toggleTheme();
+        }
+
+        updateSetting("theme", nextTheme);
+    }
+
+    async function handleLanguageChange(nextLanguage) {
+        try {
+            await i18n.changeLanguage(nextLanguage);
+            updateSetting("language", nextLanguage);
+        } catch {
+            // Giữ nguyên ngôn ngữ hiện tại nếu đổi ngôn ngữ thất bại.
+        }
     }
 
     function handleSave() {
@@ -114,6 +148,15 @@ export default function Settings() {
     }
 
     function handleReset() {
+        const nextTheme = defaultSettings.theme;
+        const nextLanguage = defaultSettings.language;
+
+        if (theme !== nextTheme) {
+            toggleTheme();
+        }
+
+        i18n.changeLanguage(nextLanguage);
+
         setSettings({ ...defaultSettings });
         setSaved(false);
         setResetting(false);
@@ -124,11 +167,8 @@ export default function Settings() {
             <div className="settings-container">
                 <header className="settings-heading">
                     <div>
-                        <h1>Cài đặt</h1>
-                        <p>
-                            Tùy chỉnh trải nghiệm và cách HomeHub hoạt động
-                            theo nhu cầu của bạn.
-                        </p>
+                        <h1>{t("settings.title")}</h1>
+                        <p>{t("settings.pageDescription")}</p>
                     </div>
 
                     <Button
@@ -141,31 +181,31 @@ export default function Settings() {
                             saved ? <Check size={17} /> : <Save size={17} />
                         }
                     >
-                        {saved ? "Đã xác nhận" : "Lưu cài đặt"}
+                        {saved
+                            ? t("settings.confirmed")
+                            : t("settings.save")}
                     </Button>
                 </header>
 
                 {saved && (
-                    <div className="settings-notice" role="status">
-                        <Check size={18} />
-                        <span>
-                            Cài đặt đã được xác nhận trong phiên hiện tại.
-                            Kết nối API để lưu lâu dài.
-                        </span>
-                    </div>
+                    <Message
+                        variant="success"
+                        message={t("settings.sessionSaveNotice")}
+                        onClose={() => setSaved(false)}
+                    />
                 )}
 
                 <div className="settings-layout">
                     <div className="settings-main">
                         <SettingsSection
                             icon={Palette}
-                            title="Giao diện"
-                            description="Điều chỉnh cách HomeHub hiển thị."
+                            title={t("settings.appearance")}
+                            description={t("settings.appearanceDescription")}
                         >
                             <SettingsRow
                                 icon={Sun}
-                                title="Chủ đề"
-                                description="Chọn giao diện phù hợp với bạn."
+                                title={t("settings.theme")}
+                                description={t("settings.themeDescription")}
                             >
                                 <div className="settings-segmented">
                                     <button
@@ -175,13 +215,11 @@ export default function Settings() {
                                                 ? "is-selected"
                                                 : ""
                                         }
-                                        onClick={() => {
-                                            toggleTheme();
-                                            updateSetting("theme", "light")
-                                        }}
+                                        onClick={() => handleThemeChange("light")}
+                                        aria-pressed={settings.theme === "light"}
                                     >
                                         <Sun size={15} />
-                                        Sáng
+                                        {t("common.lightTheme")}
                                     </button>
 
                                     <button
@@ -191,30 +229,22 @@ export default function Settings() {
                                                 ? "is-selected"
                                                 : ""
                                         }
-                                        onClick={() => {
-                                            toggleTheme();
-                                            updateSetting("theme", "dark");
-                                        }}
-                                        aria-label={
-                                            theme === "dark"
-                                                ? "Chuyển sang giao diện sáng"
-                                                : "Chuyển sang giao diện tối"
-                                        }
-                                        title={theme === "dark" ? "Giao diện sáng" : "Giao diện tối"}
+                                        onClick={() => handleThemeChange("dark")}
+                                        aria-pressed={settings.theme === "dark"}
                                     >
                                         <Moon size={15} />
-                                        Tối
+                                        {t("common.darkTheme")}
                                     </button>
                                 </div>
                             </SettingsRow>
 
                             <SettingsRow
                                 icon={Monitor}
-                                title="Chế độ gọn"
-                                description="Giảm khoảng cách để hiển thị nhiều nội dung hơn."
+                                title={t("settings.compactMode")}
+                                description={t("settings.compactModeDescription")}
                             >
                                 <SettingsToggle
-                                    label="Chế độ gọn"
+                                    label={t("settings.compactMode")}
                                     checked={settings.compactMode}
                                     onChange={(value) =>
                                         updateSetting("compactMode", value)
@@ -224,91 +254,83 @@ export default function Settings() {
 
                             <SettingsRow
                                 icon={Languages}
-                                title="Ngôn ngữ"
-                                description="Ngôn ngữ hiển thị của ứng dụng."
+                                title={t("settings.language")}
+                                description={t("settings.languageDescription")}
                                 last
                             >
                                 <select
                                     className="settings-select"
-                                    value={settings.language}
+                                    value={language}
                                     onChange={(event) =>
-                                        updateSetting(
-                                            "language",
-                                            event.target.value
-                                        )
+                                        handleLanguageChange(event.target.value)
                                     }
-                                    aria-label="Ngôn ngữ"
+                                    aria-label={t("common.language")}
                                 >
-                                    <option value="vi">Tiếng Việt</option>
-                                    <option value="en">English</option>
+                                    <option value="vi">
+                                        {t("common.vietnamese")}
+                                    </option>
+                                    <option value="en">
+                                        {t("common.english")}
+                                    </option>
                                 </select>
                             </SettingsRow>
                         </SettingsSection>
 
                         <SettingsSection
                             icon={Bell}
-                            title="Thông báo"
-                            description="Chọn những sự kiện bạn muốn nhận thông báo."
+                            title={t("settings.notifications")}
+                            description={t("settings.notificationsDescription")}
                         >
                             <SettingsRow
                                 icon={Wifi}
-                                title="Trạng thái thiết bị"
-                                description="Thông báo khi thiết bị kết nối hoặc mất kết nối."
+                                title={t("settings.deviceNotifications")}
+                                description={t("settings.deviceNotificationsDescription")}
                             >
                                 <SettingsToggle
-                                    label="Thông báo trạng thái thiết bị"
+                                    label={t("settings.deviceNotifications")}
                                     checked={settings.deviceNotifications}
                                     onChange={(value) =>
-                                        updateSetting(
-                                            "deviceNotifications",
-                                            value
-                                        )
+                                        updateSetting("deviceNotifications", value)
                                     }
                                 />
                             </SettingsRow>
 
                             <SettingsRow
                                 icon={ShieldCheck}
-                                title="Cảnh báo bảo mật"
-                                description="Thông báo về hoạt động bảo mật quan trọng."
+                                title={t("settings.securityNotifications")}
+                                description={t("settings.securityNotificationsDescription")}
                             >
                                 <SettingsToggle
-                                    label="Cảnh báo bảo mật"
+                                    label={t("settings.securityNotifications")}
                                     checked={settings.securityNotifications}
                                     onChange={(value) =>
-                                        updateSetting(
-                                            "securityNotifications",
-                                            value
-                                        )
+                                        updateSetting("securityNotifications", value)
                                     }
                                 />
                             </SettingsRow>
 
                             <SettingsRow
                                 icon={Bell}
-                                title="Thông báo hệ thống"
-                                description="Nhận thông tin về bảo trì và cập nhật."
+                                title={t("settings.systemNotifications")}
+                                description={t("settings.systemNotificationsDescription")}
                             >
                                 <SettingsToggle
-                                    label="Thông báo hệ thống"
+                                    label={t("settings.systemNotifications")}
                                     checked={settings.systemNotifications}
                                     onChange={(value) =>
-                                        updateSetting(
-                                            "systemNotifications",
-                                            value
-                                        )
+                                        updateSetting("systemNotifications", value)
                                     }
                                 />
                             </SettingsRow>
 
                             <SettingsRow
                                 icon={Volume2}
-                                title="Âm thanh"
-                                description="Phát âm thanh khi có thông báo."
+                                title={t("settings.sound")}
+                                description={t("settings.soundDescription")}
                                 last
                             >
                                 <SettingsToggle
-                                    label="Âm thanh thông báo"
+                                    label={t("settings.sound")}
                                     checked={settings.soundEnabled}
                                     onChange={(value) =>
                                         updateSetting("soundEnabled", value)
@@ -319,23 +341,20 @@ export default function Settings() {
 
                         <SettingsSection
                             icon={ShieldCheck}
-                            title="Quyền riêng tư"
-                            description="Kiểm soát thông tin hiển thị trên giao diện."
+                            title={t("settings.privacy")}
+                            description={t("settings.privacyDescription")}
                         >
                             <SettingsRow
                                 icon={Monitor}
-                                title="Hiển thị trạng thái thiết bị"
-                                description="Cho phép hiển thị trạng thái trực tuyến trên trang tổng quan."
+                                title={t("settings.showDeviceStatus")}
+                                description={t("settings.showDeviceStatusDescription")}
                                 last
                             >
                                 <SettingsToggle
-                                    label="Hiển thị trạng thái thiết bị"
+                                    label={t("settings.showDeviceStatus")}
                                     checked={settings.showDeviceStatus}
                                     onChange={(value) =>
-                                        updateSetting(
-                                            "showDeviceStatus",
-                                            value
-                                        )
+                                        updateSetting("showDeviceStatus", value)
                                     }
                                 />
                             </SettingsRow>
@@ -348,38 +367,35 @@ export default function Settings() {
                                 <Globe size={22} />
                             </span>
 
-                            <h2>Trải nghiệm của bạn</h2>
-                            <p>
-                                Tùy chỉnh HomeHub để quản lý thiết bị thông
-                                minh thuận tiện hơn.
-                            </p>
+                            <h2>{t("settings.experienceTitle")}</h2>
+                            <p>{t("settings.experienceDescription")}</p>
 
                             <div className="settings-summary__divider" />
 
                             <div className="settings-summary__item">
-                                <span>Ngôn ngữ</span>
+                                <span>{t("settings.language")}</span>
                                 <strong>
-                                    {settings.language === "vi"
-                                        ? "Tiếng Việt"
-                                        : "English"}
+                                    {language === "vi"
+                                        ? t("common.vietnamese")
+                                        : t("common.english")}
                                 </strong>
                             </div>
 
                             <div className="settings-summary__item">
-                                <span>Giao diện</span>
+                                <span>{t("settings.theme")}</span>
                                 <strong>
                                     {settings.theme === "light"
-                                        ? "Sáng"
-                                        : "Tối"}
+                                        ? t("common.lightTheme")
+                                        : t("common.darkTheme")}
                                 </strong>
                             </div>
 
                             <div className="settings-summary__item">
-                                <span>Thông báo bảo mật</span>
+                                <span>{t("settings.securityNotifications")}</span>
                                 <strong>
                                     {settings.securityNotifications
-                                        ? "Đang bật"
-                                        : "Đang tắt"}
+                                        ? t("settings.enabled")
+                                        : t("settings.disabled")}
                                 </strong>
                             </div>
                         </section>
@@ -389,11 +405,8 @@ export default function Settings() {
                                 <RotateCcw size={19} />
                             </span>
 
-                            <h3>Khôi phục mặc định</h3>
-                            <p>
-                                Đưa các tùy chọn trên trang này về giá trị
-                                ban đầu.
-                            </p>
+                            <h3>{t("settings.resetTitle")}</h3>
+                            <p>{t("settings.resetDescription")}</p>
 
                             {!resetting ? (
                                 <Button
@@ -404,14 +417,21 @@ export default function Settings() {
                                     onClick={() => setResetting(true)}
                                     startIcon={<RotateCcw size={16} />}
                                 >
-                                    <span style={{ display: "flex", gap: "2px", justifyContent: "center", alignItems: "center" }}>
-                                        Khôi phục cài đặt
+                                    <span
+                                        style={{
+                                            display: "flex",
+                                            gap: "2px",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        {t("settings.reset")}
                                         <ChevronRight size={16} />
                                     </span>
                                 </Button>
                             ) : (
                                 <div className="settings-reset-confirm">
-                                    <p>Bạn muốn khôi phục tất cả cài đặt?</p>
+                                    <p>{t("settings.resetConfirm")}</p>
 
                                     <div>
                                         <Button
@@ -421,7 +441,7 @@ export default function Settings() {
                                             className="settings-reset-cancel"
                                             onClick={() => setResetting(false)}
                                         >
-                                            Hủy
+                                            {t("common.cancel")}
                                         </Button>
 
                                         <Button
@@ -431,7 +451,7 @@ export default function Settings() {
                                             className="settings-reset-confirm__button"
                                             onClick={handleReset}
                                         >
-                                            Xác nhận
+                                            {t("settings.confirm")}
                                         </Button>
                                     </div>
                                 </div>
