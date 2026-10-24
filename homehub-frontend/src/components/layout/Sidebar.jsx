@@ -23,6 +23,11 @@ const menuItems = [
     { label: "expenses", path: "/expenses", icon: Wallet },
 ];
 
+const systemItems = [
+    { label: "profile", path: "/profile", icon: UserRound },
+    { label: "settings", path: "/settings", icon: Settings },
+];
+
 function getInitials(name = "") {
     return (
         name
@@ -39,11 +44,11 @@ export default function Sidebar({ user, loading, onLogout }) {
     const [accountMenuOpen, setAccountMenuOpen] = useState(false);
     const { t } = useTranslation();
 
-    const name = user?.full_name || user?.username || t("sidebar.user");
+    const name = user?.full_name || user?.username || t("common.user");
     const avatar = user?.avatar_url;
     const role = user?.is_superuser === true
-        ? t("sidebar.admin")
-        : t("sidebar.member");
+        ? t("common.admin")
+        : t("common.member");
 
     return (
         <aside className="sidebar">
@@ -78,7 +83,7 @@ export default function Sidebar({ user, loading, onLogout }) {
                             </span>
 
                             <span className="sidebar-link__label">
-                                {t(`sidebar.${label}`)}
+                                {t(`pages.${label}`)}
                             </span>
 
                             <span className="sidebar-link__indicator" />
@@ -92,35 +97,26 @@ export default function Sidebar({ user, loading, onLogout }) {
                     {t("sidebar.system")}
                 </p>
 
-                <NavLink
-                    to="/profile"
-                    className={({ isActive }) =>
-                        `sidebar-link${isActive ? " is-active" : ""}`
-                    }
-                >
-                    <span className="sidebar-link__icon">
-                        <UserRound size={19} strokeWidth={1.9} />
-                    </span>
-                    <span className="sidebar-link__label">
-                        {t("sidebar.profile")}
-                    </span>
-                    <span className="sidebar-link__indicator" />
-                </NavLink>
+                {systemItems.map(({ label, path, icon: Icon, end }) => (
+                    <NavLink
+                        key={path}
+                        to={path}
+                        end={end}
+                        className={({ isActive }) =>
+                            `sidebar-link${isActive ? " is-active" : ""}`
+                        }
+                    >
+                        <span className="sidebar-link__icon">
+                            <Icon size={19} strokeWidth={1.9} />
+                        </span>
 
-                <NavLink
-                    to="/settings"
-                    className={({ isActive }) =>
-                        `sidebar-link${isActive ? " is-active" : ""}`
-                    }
-                >
-                    <span className="sidebar-link__icon">
-                        <Settings size={19} strokeWidth={1.9} />
-                    </span>
-                    <span className="sidebar-link__label">
-                        {t("sidebar.settings")}
-                    </span>
-                    <span className="sidebar-link__indicator" />
-                </NavLink>
+                        <span className="sidebar-link__label">
+                            {t(`pages.${label}`)}
+                        </span>
+
+                        <span className="sidebar-link__indicator" />
+                    </NavLink>
+                ))}
             </div>
 
             <div className="sidebar-bottom">
@@ -138,7 +134,7 @@ export default function Sidebar({ user, loading, onLogout }) {
                                 onClick={() => setAccountMenuOpen(false)}
                             >
                                 <UserRound size={17} />
-                                {t("sidebar.profile")}
+                                {t("pages.profile")}
                             </NavLink>
 
                             <button
@@ -147,7 +143,7 @@ export default function Sidebar({ user, loading, onLogout }) {
                                 onClick={onLogout}
                             >
                                 <LogOut size={17} />
-                                {t("sidebar.logout")}
+                                {t("common.logout")}
                             </button>
                         </div>
                     )}
@@ -170,7 +166,7 @@ export default function Sidebar({ user, loading, onLogout }) {
                         <span className="account-card__info">
                             <strong>
                                 {loading
-                                    ? t("sidebar.loading")
+                                    ? t("common.loading")
                                     : name}
                             </strong>
                             <small>

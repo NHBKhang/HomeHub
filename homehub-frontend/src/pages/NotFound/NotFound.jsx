@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
     ArrowLeft,
     ArrowRight,
@@ -11,12 +12,17 @@ import useDocumentTitle from "../../hooks/useDocuments";
 
 export default function NotFound() {
     useDocumentTitle();
+
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     return (
         <main className="not-found">
             <div className="not-found__content">
-                <div className="not-found__illustration" aria-hidden="true">
+                <div
+                    className="not-found__illustration"
+                    aria-hidden="true"
+                >
                     <div className="not-found__orbit not-found__orbit--one" />
                     <div className="not-found__orbit not-found__orbit--two" />
 
@@ -32,18 +38,17 @@ export default function NotFound() {
 
                 <span className="not-found__eyebrow">
                     <span className="not-found__status-dot" />
-                    LỖI 404
+                    {t("notFound.eyebrow")}
                 </span>
 
                 <h1>
-                    Có vẻ bạn đã
+                    {t("notFound.titleLine1")}
                     <br />
-                    <span>đi lạc rồi!</span>
+                    <span>{t("notFound.titleLine2")}</span>
                 </h1>
 
                 <p className="not-found__description">
-                    Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển.
-                    Đừng lo, hãy quay về và tiếp tục quản lý ngôi nhà của bạn nhé.
+                    {t("notFound.description")}
                 </p>
 
                 <div className="not-found__actions">
@@ -53,7 +58,7 @@ export default function NotFound() {
                         onClick={() => navigate("/", { replace: true })}
                     >
                         <House size={18} />
-                        Về trang tổng quan
+                        {t("notFound.homeButton")}
                         <ArrowRight size={17} />
                     </button>
 
@@ -63,7 +68,7 @@ export default function NotFound() {
                         onClick={() => navigate(-1)}
                     >
                         <ArrowLeft size={17} />
-                        Quay lại
+                        {t("notFound.backButton")}
                     </button>
                 </div>
 
@@ -71,10 +76,11 @@ export default function NotFound() {
                     <span className="not-found__footer-icon">
                         <House size={15} />
                     </span>
+
                     <span>
                         <strong>HomeHub</strong>
                         <span className="not-found__footer-divider">·</span>
-                        Smart living, made simple.
+                        {t("notFound.tagline")}
                     </span>
                 </div>
             </div>

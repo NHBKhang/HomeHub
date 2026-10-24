@@ -1,23 +1,4 @@
 {
-    "sidebar": 
-    {
-        "brandSubtitle": "SMART LIVING",
-        "workspace": "YOUR SPACE",
-        "overview": "Overview",
-        "devices": "Devices",
-        "tasks": "Tasks",
-        "expenses": "Expenses",
-        "system": "SYSTEM",
-        "profile": "Profile",
-        "settings": "Settings",
-        "activeStatus": "HomeHub is active",
-        "user": "User",
-        "admin": "Administrator",
-        "member": "Member",
-        "loading": "Loading...",
-        "connecting": "Connecting",
-        "logout": "Log out"
-    },
     "common": 
     {
         "save": "Save changes",
@@ -29,27 +10,187 @@
         "vietnamese": "Vietnamese",
         "english": "English",
         "lightTheme": "Light",
-        "darkTheme": "Dark"
+        "darkTheme": "Dark",
+        "user": "User",
+        "admin": "Administrator",
+        "member": "Member",
+        "logout": "Log out",
+        "notifications": "Notifications",
+        "refresh": "Refresh",
+        "saveChanges": "Save Changes",
+        "saving": "Saving...",
+        "basicInfo": 
+        {
+            "username": 
+            {
+                "label": "Username",
+                "placeholder": "Enter your username",
+                "validation": "Username may only contain unaccented letters, numbers, and underscores."
+            },
+            "lastName": 
+            {
+                "label": "Last name",
+                "placeholder": "Smith"
+            },
+            "firstName": 
+            {
+                "label": "First name",
+                "placeholder": "John"
+            },
+            "password": 
+            {
+                "label": "Password",
+                "placeholder": "Enter your password",
+                "show": "Show password",
+                "hide": "Hide password"
+            },
+            "confirmPassword": 
+            {
+                "label": "Confirm password",
+                "placeholder": "Re-enter your password",
+                "show": "Show confirmation password",
+                "hide": "Hide confirmation password"
+            }
+        }
     },
-    "navigation": 
+    "pages": 
     {
-        "dashboard": "Dashboard",
+        "login": "Login",
+        "register": "Register",
+        "overview": "Overview",
         "devices": "Devices",
-        "rooms": "Rooms",
-        "automations": "Automations",
-        "settings": "Settings",
+        "tasks": "Tasks",
+        "expenses": "Expenses",
         "profile": "Profile",
-        "logout": "Log out"
+        "settings": "Settings",
+        "defaultPage": "Page"
+    },
+    "sidebar": 
+    {
+        "brandSubtitle": "SMART LIVING",
+        "workspace": "YOUR SPACE",
+        "activeStatus": "HomeHub is active",
+        "connecting": "Connecting"
+    },
+    "topbar": 
+    {
+        "searchPlaceholder": "Search devices...",
+        "searchLabel": "Search devices",
+        "switchToLight": "Switch to light mode",
+        "switchToDark": "Switch to dark mode",
+        "lightTheme": "Light mode",
+        "darkTheme": "Dark mode",
+        "accountInfo": "Account information"
+    },
+    "login": 
+    {
+        "checkingAccount": "Checking your account...",
+        "welcome": "WELCOME BACK",
+        "title": "Sign in",
+        "subtitle": "Sign in to continue managing your home.",
+        "visual": 
+        {
+            "eyebrow": "SMART LIVING PLATFORM",
+            "titleLine1": "A smarter home,",
+            "titleLine2": "starts with you.",
+            "description": "Manage devices, tasks, and expenses in one simple, comfortable, and secure space.",
+            "feature": "One space. Everything within reach.",
+            "footer": "HOMEHUB · SMARTER EVERYDAY"
+        },
+        "language": 
+        {
+            "ariaLabel": "Chuyển ngôn ngữ sang tiếng Việt"
+        },
+        "submitting": "Signing in...",
+        "submit": "Sign in",
+        "noAccount": "Don't have an account?",
+        "registerLink": "Create an account",
+        "legal": "By continuing, you agree to HomeHub's terms of use.",
+        "errors": 
+        {
+            "invalidCredentials": "Incorrect username or password.",
+            "userLoadFailed": "Unable to load account information.",
+            "general": "Sign-in failed. Please try again."
+        }
+    },
+    "register": 
+    {
+        "checkingAccount": "Checking your account...",
+        "welcome": "GET STARTED FOR FREE",
+        "title": "Create an account",
+        "subtitle": "Fill in the information below to get started with HomeHub.",
+        "visual": 
+        {
+            "eyebrow": "YOUR HOME, YOUR CONTROL",
+            "titleLine1": "Create a space",
+            "titleLine2": "that feels like yours.",
+            "description": "Start your smart home management journey with HomeHub.",
+            "footer": "HOMEHUB · SMARTER EVERYDAY"
+        },
+        "language": 
+        {
+            "ariaLabel": "Choose language"
+        },
+        "submitting": "Creating account...",
+        "submit": "Create account",
+        "haveAccount": "Already have an account?",
+        "loginLink": "Sign in",
+        "errors": 
+        {
+            "passwordTooShort": "Password must be at least 8 characters long.",
+            "passwordMismatch": "Passwords do not match.",
+            "conflict": "Username or email is already in use.",
+            "invalidData": "Invalid registration information. Please check your details.",
+            "general": "Unable to create your account. Please try again."
+        }
     },
     "profile": 
     {
-        "title": "Profile",
-        "fullName": "Full name",
-        "email": "Email",
-        "phone": "Phone number",
-        "update": "Update profile"
+        "title": "Personal Profile",
+        "description": "Manage your personal information and HomeHub security.",
+        "loadingProfile": "Loading profile...",
+        "refreshError": "Unable to refresh account information.",
+        "edit": "Edit Profile",
+        "active": "Active",
+        "inactive": "Disabled",
+        "memberSince": "MEMBER SINCE",
+        "personalInfo": "Personal Information",
+        "personalInfoDescription": "Basic account information.",
+        "fullName": "Full Name",
+        "accountDescription": "Account status and system information.",
+        "accountType": "Account Type",
+        "status": "Status",
+        "createdAt": "Account Created",
+        "updatedAt": "Last Updated",
+        "security": "Account Security",
+        "securityDescription": "Settings to help protect your HomeHub account.",
+        "changePassword": "Change Password",
+        "changePasswordDescription": "Update your password to protect your account.",
+        "twoFactor": "Two-Factor Authentication (2FA)",
+        "twoFactorDescription": "Add another verification layer when signing in.",
+        "devicesSessions": "Devices and Sessions",
+        "devicesSessionsDescription": "View signed-in devices and remotely sign out.",
+        "securityHistory": "Security History",
+        "securityHistoryDescription": "Track sign-ins and important changes.",
+        "securityNotifications": "Security Notifications",
+        "securityNotificationsDescription": "Get alerts when unusual activity is detected.",
+        "recoveryMethods": "Recovery Methods",
+        "recoveryMethodsDescription": "Prepare ways to regain access to your account.",
+        "notConfigured": "Not configured",
+        "comingSoon": "Coming soon",
+        "securityNote": "Do not share passwords, access tokens, or sensitive authentication data on your profile page.",
+        "logoutTitle": "Sign Out of HomeHub",
+        "logoutDescription": "End your session on this device.",
+        "accountSettings": "ACCOUNT SETTINGS",
+        "editTitle": "Edit Profile",
+        "editDescription": "Update your personal information.",
+        "fillRequired": "Please fill in all required fields.",
+        "updateError": "Unable to update your profile.",
+        "updateSuccess": "Profile updated successfully.",
+        "notUpdated": "Not updated"
     },
-    "settings": {
+    "settings": 
+    {
         "title": "Settings",
         "pageDescription": "Customize your HomeHub experience to suit your needs.",
         "save": "Save settings",
@@ -86,5 +227,15 @@
         "reset": "Reset settings",
         "resetConfirm": "Do you want to reset all settings?",
         "confirm": "Confirm"
+    },
+    "notFound": 
+    {
+        "eyebrow": "ERROR 404",
+        "titleLine1": "Looks like you've",
+        "titleLine2": "lost your way!",
+        "description": "The page you're looking for doesn't exist or may have been moved. Don't worry, head back and continue managing your home.",
+        "homeButton": "Back to dashboard",
+        "backButton": "Go back",
+        "tagline": "Smart living, made simple."
     }
 }

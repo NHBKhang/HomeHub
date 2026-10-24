@@ -1,23 +1,4 @@
 {
-    "sidebar": 
-    {
-        "brandSubtitle": "SMART LIVING",
-        "workspace": "KHÔNG GIAN CỦA BẠN",
-        "overview": "Tổng quan",
-        "devices": "Thiết bị",
-        "tasks": "Công việc",
-        "expenses": "Chi tiêu",
-        "system": "HỆ THỐNG",
-        "profile": "Hồ sơ",
-        "settings": "Cài đặt",
-        "activeStatus": "HomeHub đang hoạt động",
-        "user": "Người dùng",
-        "admin": "Quản trị viên",
-        "member": "Thành viên",
-        "loading": "Đang tải...",
-        "connecting": "Đang kết nối",
-        "logout": "Đăng xuất"
-    },
     "common": 
     {
         "save": "Lưu thay đổi",
@@ -29,27 +10,186 @@
         "vietnamese": "Tiếng Việt",
         "english": "Tiếng Anh",
         "lightTheme": "Sáng",
-        "darkTheme": "Tối"
+        "darkTheme": "Tối",
+        "user": "Người dùng",
+        "admin": "Quản trị viên",
+        "member": "Thành viên",
+        "logout": "Đăng xuất",
+        "notifications": "Thông báo",
+        "refresh": "Làm mới",
+        "saveChanges": "Lưu thay đổi",
+        "saving": "Đang lưu...",
+        "basicInfo": 
+        {
+            "username": 
+            {
+                "label": "Tên đăng nhập",
+                "placeholder": "Nhập tên đăng nhập",
+                "validation": "Tên đăng nhập chỉ được chứa chữ cái không dấu, chữ số và dấu gạch dưới."
+            },
+            "lastName": 
+            {
+                "label": "Họ",
+                "placeholder": "Nguyễn"
+            },
+            "firstName": 
+            {
+                "label": "Tên",
+                "placeholder": "Văn A"
+            },
+            "password": 
+            {
+                "label": "Mật khẩu",
+                "placeholder": "Nhập mật khẩu",
+                "show": "Hiện mật khẩu",
+                "hide": "Ẩn mật khẩu"
+            },
+            "confirmPassword": 
+            {
+                "label": "Xác nhận mật khẩu",
+                "placeholder": "Nhập lại mật khẩu",
+                "show": "Hiện mật khẩu xác nhận",
+                "hide": "Ẩn mật khẩu xác nhận"
+            }
+        }
     },
-    "navigation": 
+    "pages": 
     {
-        "dashboard": "Tổng quan",
+        "login": "Đăng nhập",
+        "register": "Đăng ký",
+        "overview": "Tổng quan",
         "devices": "Thiết bị",
-        "rooms": "Phòng",
-        "automations": "Tự động hóa",
+        "tasks": "Công việc",
+        "expenses": "Chi tiêu",
+        "profile": "Hồ sơ",
         "settings": "Cài đặt",
-        "profile": "Hồ sơ cá nhân",
-        "logout": "Đăng xuất"
+        "defaultPage": "Trang"
+    },
+    "sidebar": 
+    {
+        "brandSubtitle": "SMART LIVING",
+        "workspace": "KHÔNG GIAN CỦA BẠN",
+        "activeStatus": "HomeHub đang hoạt động",
+        "connecting": "Đang kết nối"
+    },
+    "topbar": 
+    {
+        "searchPlaceholder": "Tìm kiếm thiết bị...",
+        "searchLabel": "Tìm kiếm thiết bị",
+        "switchToLight": "Chuyển sang giao diện sáng",
+        "switchToDark": "Chuyển sang giao diện tối",
+        "lightTheme": "Giao diện sáng",
+        "darkTheme": "Giao diện tối",
+        "accountInfo": "Thông tin tài khoản"
+    },
+    "login": 
+    {
+        "checkingAccount": "Đang kiểm tra tài khoản...",
+        "welcome": "CHÀO MỪNG TRỞ LẠI",
+        "title": "Đăng nhập",
+        "subtitle": "Đăng nhập để tiếp tục quản lý ngôi nhà của bạn.",
+        "visual": 
+        {
+            "eyebrow": "NỀN TẢNG NHÀ THÔNG MINH",
+            "titleLine1": "Ngôi nhà thông minh,",
+            "titleLine2": "bắt đầu từ bạn.",
+            "description": "Quản lý thiết bị, công việc và chi tiêu trong một không gian đơn giản, tiện nghi và an toàn.",
+            "feature": "Một không gian. Mọi thứ trong tầm tay.",
+            "footer": "HOMEHUB · THÔNG MINH MỖI NGÀY"
+        },
+        "language": 
+        {
+            "ariaLabel": "Switch language to English"
+        },
+        "submitting": "Đang đăng nhập...",
+        "submit": "Đăng nhập",
+        "noAccount": "Chưa có tài khoản?",
+        "registerLink": "Tạo tài khoản",
+        "legal": "Bằng việc tiếp tục, bạn đồng ý với các điều khoản sử dụng của HomeHub.",
+        "errors": 
+        {
+            "invalidCredentials": "Tên tài khoản hoặc mật khẩu không chính xác.",
+            "userLoadFailed": "Không thể tải thông tin tài khoản.",
+            "general": "Đăng nhập thất bại. Vui lòng thử lại."
+        }
+    },
+    "register": 
+    {
+        "checkingAccount": "Đang kiểm tra tài khoản...",
+        "welcome": "BẮT ĐẦU MIỄN PHÍ",
+        "title": "Tạo tài khoản",
+        "subtitle": "Điền thông tin bên dưới để bắt đầu sử dụng HomeHub.",
+        "visual": 
+        {
+            "eyebrow": "NGÔI NHÀ CỦA BẠN, QUYỀN KIỂM SOÁT CỦA BẠN",
+            "titleLine1": "Tạo không gian",
+            "titleLine2": "sống của riêng bạn.",
+            "description": "Bắt đầu hành trình quản lý ngôi nhà thông minh của bạn với HomeHub.",
+            "footer": "HOMEHUB · THÔNG MINH MỖI NGÀY"
+        },
+        "language": 
+        {
+            "ariaLabel": "Chọn ngôn ngữ"
+        },
+        "submitting": "Đang tạo tài khoản...",
+        "submit": "Tạo tài khoản",
+        "haveAccount": "Đã có tài khoản?",
+        "loginLink": "Đăng nhập",
+        "errors": 
+        {
+            "passwordTooShort": "Mật khẩu phải có ít nhất 8 ký tự.",
+            "passwordMismatch": "Mật khẩu xác nhận không khớp.",
+            "conflict": "Username hoặc email đã được sử dụng.",
+            "invalidData": "Thông tin đăng ký không hợp lệ. Vui lòng kiểm tra lại.",
+            "general": "Không thể tạo tài khoản. Vui lòng thử lại."
+        }
     },
     "profile": 
     {
         "title": "Hồ sơ cá nhân",
+        "description": "Quản lý thông tin cá nhân và bảo mật HomeHub.",
+        "loadingProfile": "Đang tải hồ sơ...",
+        "edit": "Chỉnh sửa hồ sơ",
+        "active": "Đang hoạt động",
+        "inactive": "Đã vô hiệu hóa",
+        "memberSince": "THÀNH VIÊN TỪ",
+        "personalInfo": "Thông tin cá nhân",
+        "personalInfoDescription": "Thông tin cơ bản của tài khoản.",
         "fullName": "Họ và tên",
-        "email": "Email",
-        "phone": "Số điện thoại",
-        "update": "Cập nhật hồ sơ"
+        "account": "Tài khoản",
+        "accountDescription": "Trạng thái và thông tin hệ thống.",
+        "accountType": "Loại tài khoản",
+        "status": "Trạng thái",
+        "createdAt": "Ngày tạo tài khoản",
+        "updatedAt": "Cập nhật lần cuối",
+        "security": "Bảo mật tài khoản",
+        "securityDescription": "Các thiết lập giúp bảo vệ tài khoản HomeHub.",
+        "changePassword": "Đổi mật khẩu",
+        "changePasswordDescription": "Cập nhật mật khẩu để bảo vệ tài khoản.",
+        "twoFactor": "Xác thực hai yếu tố (2FA)",
+        "twoFactorDescription": "Thêm một lớp xác minh khi đăng nhập.",
+        "devicesSessions": "Thiết bị và phiên đăng nhập",
+        "devicesSessionsDescription": "Xem thiết bị đang đăng nhập và đăng xuất từ xa.",
+        "securityHistory": "Lịch sử bảo mật",
+        "securityHistoryDescription": "Theo dõi đăng nhập và các thay đổi quan trọng.",
+        "securityNotifications": "Thông báo bảo mật",
+        "securityNotificationsDescription": "Nhận cảnh báo khi phát hiện hoạt động bất thường.",
+        "recoveryMethods": "Phương thức khôi phục",
+        "recoveryMethodsDescription": "Chuẩn bị cách lấy lại quyền truy cập tài khoản.",
+        "notConfigured": "Chưa thiết lập",
+        "comingSoon": "Sắp có",
+        "securityNote": "Không chia sẻ mật khẩu, token truy cập hoặc dữ liệu xác thực nhạy cảm trên trang hồ sơ.",
+        "logoutTitle": "Đăng xuất khỏi HomeHub",
+        "logoutDescription": "Kết thúc phiên sử dụng trên thiết bị này.",
+        "editTitle": "Chỉnh sửa hồ sơ",
+        "editDescription": "Cập nhật thông tin cá nhân của bạn.",
+        "fillRequired": "Vui lòng nhập đầy đủ thông tin.",
+        "refreshError": "Không thể tải lại thông tin tài khoản.",
+        "updateError": "Không thể cập nhật thông tin cá nhân.",
+        "notUpdated": "Chưa cập nhật"
     },
-    "settings": {
+    "settings": 
+    {
         "title": "Cài đặt",
         "pageDescription": "Tùy chỉnh trải nghiệm và cách HomeHub hoạt động theo nhu cầu của bạn.",
         "save": "Lưu cài đặt",
@@ -86,5 +226,15 @@
         "reset": "Khôi phục cài đặt",
         "resetConfirm": "Bạn muốn khôi phục tất cả cài đặt?",
         "confirm": "Xác nhận"
+    },
+    "notFound": 
+    {
+        "eyebrow": "LỖI 404",
+        "titleLine1": "Có vẻ bạn đã",
+        "titleLine2": "đi lạc rồi!",
+        "description": "Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển. Đừng lo, hãy quay về và tiếp tục quản lý ngôi nhà của bạn nhé.",
+        "homeButton": "Về trang tổng quan",
+        "backButton": "Quay lại",
+        "tagline": "Cuộc sống thông minh, đơn giản hơn."
     }
 }

@@ -137,6 +137,14 @@
     --reset-bg: #f5f7fc;
     --reset-hover-border: #c9cdfa;
 
+    /* Modal */
+    --modal-card-bg: #ffffff;
+    --modal-text-primary: #111827;
+    --modal-text-secondary: #6b7280;
+    --modal-border-color: #e5e7eb;
+    --modal-surface-secondary: #f3f4f6;
+    --modal-primary-color: #4f46e5;
+
     /* Profile compatibility aliases */
     --profile-accent: var(--purple);
     --profile-accent-hover: var(--purple-hover);
@@ -292,6 +300,14 @@
     /* Reset action */
     --reset-bg: #202a3d;
     --reset-hover-border: #686bd4;
+
+    /* Modal */
+    --modal-card-bg: #1e293b;
+    --modal-text-primary: #f1f5f9;
+    --modal-text-secondary: #94a3b8;
+    --modal-border-color: #334155;
+    --modal-surface-secondary: #293548;
+    --modal-primary-color: #818cf8;
 
     /* Profile compatibility aliases */
     --profile-accent: var(--purple);

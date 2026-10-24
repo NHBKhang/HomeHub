@@ -1,9 +1,20 @@
-import { useState } from "react";
+
+import { useState, useEffect, useRef } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import {
-    UserRound, Mail, LockKeyhole, ArrowRight, House,
-    Eye, EyeOff,
+    UserRound,
+    Mail,
+    LockKeyhole,
+    ArrowRight,
+    House,
+    Eye,
+    EyeOff,
+    Languages,
+    ChevronDown,
+    Check,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
+
 import { useUser } from "../../contexts/UserContext";
 import "./Auth.css";
 import useDocumentTitle from "../../hooks/useDocuments";
@@ -11,11 +22,18 @@ import userService from "../../services/userSerivce";
 
 export default function Register() {
     useDocumentTitle();
+
+    const { t, i18n } = useTranslation();
     const navigate = useNavigate();
     const { user, userLoading } = useUser();
 
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
+    const [languageOpen, setLanguageOpen] = useState(false);
+    const languageRef = useRef(null);
+
+    const currentLanguage = i18n.resolvedLanguage || i18n.language;
+    const isVietnamese = currentLanguage.startsWith("vi");
 
     const [userData, setUserData] = useState({
         username: "",
@@ -31,6 +49,36 @@ export default function Register() {
         confirm: false,
     });
 
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (
+                languageRef.current &&
+                !languageRef.current.contains(event.target)
+            ) {
+                setLanguageOpen(false);
+            }
+        }
+
+        function handleEscape(event) {
+            if (event.key === "Escape") {
+                setLanguageOpen(false);
+            }
+        }
+
+        document.addEventListener("mousedown", handleClickOutside);
+        document.addEventListener("keydown", handleEscape);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("keydown", handleEscape);
+        };
+    }, []);
+
+    async function selectLanguage(language) {
+        await i18n.changeLanguage(language);
+        setLanguageOpen(false);
+    }
+
     const updateUserData = (event) => {
         const { name, value } = event.target;
 
@@ -40,16 +88,19 @@ export default function Register() {
         }));
     };
 
-    const updateShow = (field, value) => {
+    const updateShow = (field) => {
         setShow((prev) => ({
             ...prev,
-            [field]: typeof value === "function"
-                ? value(prev[field])
-                : value,
+            [field]: !prev[field],
         }));
     };
+
     if (userLoading) {
-        return <div className="auth-loading">Đang kiểm tra tài khoản...</div>;
+        return (
+            <div className="auth-loading">
+                {t("register.checkingAccount")}
+            </div>
+        );
     }
 
     if (user) {
@@ -61,12 +112,12 @@ export default function Register() {
         setError("");
 
         if (userData.password.length < 8) {
-            setError("Mật khẩu phải có ít nhất 8 ký tự.");
+            setError(t("register.errors.passwordTooShort"));
             return;
         }
 
         if (userData.password !== userData.confirmPassword) {
-            setError("Mật khẩu xác nhận không khớp.");
+            setError(t("register.errors.passwordMismatch"));
             return;
         }
 
@@ -90,12 +141,12 @@ export default function Register() {
             });
         } catch (err) {
             if (err.status === 409) {
-                setError("Username hoặc email đã được sử dụng.");
+                setError(t("register.errors.conflict"));
             } else if (err.status === 422) {
-                setError("Thông tin đăng ký không hợp lệ. Vui lòng kiểm tra lại.");
+                setError(t("register.errors.invalidData"));
             } else {
                 setError(
-                    err.message || "Không thể tạo tài khoản. Vui lòng thử lại."
+                    err.message || t("register.errors.general")
                 );
             }
         } finally {
@@ -109,45 +160,120 @@ export default function Register() {
                 <div className="auth-visual__glow" />
 
                 <Link to="/login" className="auth-brand">
-                    <span className="auth-brand__icon"><House size={23} /></span>
+                    <span className="auth-brand__icon">
+                        <House size={23} />
+                    </span>
                     <span>Home<span>Hub</span></span>
                 </Link>
 
                 <div className="auth-visual__content">
-                    <span className="auth-eyebrow">YOUR HOME, YOUR CONTROL</span>
+                    <span className="auth-eyebrow">
+                        {t("register.visual.eyebrow")}
+                    </span>
+
                     <h1>
-                        Tạo không gian
+                        {t("register.visual.titleLine1")}
                         <br />
-                        <span>sống của riêng bạn.</span>
+                        <span>{t("register.visual.titleLine2")}</span>
                     </h1>
-                    <p>
-                        Bắt đầu hành trình quản lý ngôi nhà thông minh của bạn
-                        với HomeHub.
-                    </p>
+
+                    <p>{t("register.visual.description")}</p>
                 </div>
 
                 <span className="auth-visual__footer">
-                    HOMEHUB · SMARTER EVERYDAY
+                    {t("register.visual.footer")}
                 </span>
             </section>
 
             <section className="auth-panel">
                 <div className="auth-form-wrap">
-                    <div className="auth-mobile-brand">
-                        <span className="auth-brand__icon"><House size={22} /></span>
-                        <strong>HomeHub</strong>
+                    <div className="auth-form-topbar">
+                        <div className="auth-mobile-brand">
+                            <span className="auth-brand__icon">
+                                <House size={22} />
+                            </span>
+                            <strong>HomeHub</strong>
+                        </div>
+
+                        <div className="auth-language" ref={languageRef}>
+                            <button
+                                type="button"
+                                className="auth-language__trigger"
+                                onClick={() =>
+                                    setLanguageOpen((prev) => !prev)
+                                }
+                                aria-expanded={languageOpen}
+                                aria-haspopup="menu"
+                                aria-label={t("register.language.ariaLabel")}
+                            >
+                                <Languages size={17} />
+                                <span>{isVietnamese ? "VI" : "EN"}</span>
+                                <ChevronDown
+                                    size={15}
+                                    className={languageOpen ? "is-open" : ""}
+                                />
+                            </button>
+
+                            {languageOpen && (
+                                <div
+                                    className="auth-language__menu"
+                                    role="menu"
+                                >
+                                    <button
+                                        type="button"
+                                        role="menuitem"
+                                        className="auth-language__option"
+                                        onClick={() => selectLanguage("vi")}
+                                    >
+                                        <span className="auth-language__flag">
+                                            🇻🇳
+                                        </span>
+                                        <span>Tiếng Việt</span>
+                                        {isVietnamese && (
+                                            <Check
+                                                size={16}
+                                                className="auth-language__check"
+                                            />
+                                        )}
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        role="menuitem"
+                                        className="auth-language__option"
+                                        onClick={() => selectLanguage("en")}
+                                    >
+                                        <span className="auth-language__flag">
+                                            🇬🇧
+                                        </span>
+                                        <span>English</span>
+                                        {!isVietnamese && (
+                                            <Check
+                                                size={16}
+                                                className="auth-language__check"
+                                            />
+                                        )}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     <span className="auth-eyebrow auth-eyebrow--muted">
-                        BẮT ĐẦU MIỄN PHÍ
+                        {t("register.welcome")}
                     </span>
-                    <h2>Tạo tài khoản</h2>
+
+                    <h2>{t("register.title")}</h2>
+
                     <p className="auth-subtitle">
-                        Điền thông tin bên dưới để bắt đầu sử dụng HomeHub.
+                        {t("register.subtitle")}
                     </p>
 
                     <form className="auth-form" onSubmit={submitForm}>
-                        <label htmlFor="register-username">Tên đăng nhập</label>
+                        <label htmlFor="register-username">
+                            {t("common.basicInfo.username.label")}
+                        </label>
+
                         <div className="auth-input-wrap">
                             <UserRound size={18} />
                             <input
@@ -155,20 +281,23 @@ export default function Register() {
                                 name="username"
                                 type="text"
                                 autoComplete="username"
-                                placeholder="username"
+                                placeholder={t("common.basicInfo.username.placeholder")}
                                 value={userData.username}
                                 onChange={updateUserData}
                                 minLength={3}
                                 maxLength={50}
                                 pattern="[A-Za-z0-9_]+"
-                                title="Tên đăng nhập chỉ được chứa chữ cái không dấu, chữ số và dấu gạch dưới."
+                                title={t("common.basicInfo.username.validation")}
                                 required
                             />
                         </div>
 
                         <div className="auth-name-row">
                             <div className="auth-name-field">
-                                <label htmlFor="register-last-name">Họ</label>
+                                <label htmlFor="register-last-name">
+                                    {t("common.basicInfo.lastName.label")}
+                                </label>
+
                                 <div className="auth-input-wrap">
                                     <UserRound size={18} />
                                     <input
@@ -176,7 +305,7 @@ export default function Register() {
                                         name="last_name"
                                         type="text"
                                         autoComplete="family-name"
-                                        placeholder="Nguyễn"
+                                        placeholder={t("common.basicInfo.lastName.placeholder")}
                                         value={userData.last_name}
                                         onChange={updateUserData}
                                         maxLength={100}
@@ -186,7 +315,10 @@ export default function Register() {
                             </div>
 
                             <div className="auth-name-field">
-                                <label htmlFor="register-first-name">Tên</label>
+                                <label htmlFor="register-first-name">
+                                    {t("common.basicInfo.firstName.label")}
+                                </label>
+
                                 <div className="auth-input-wrap">
                                     <UserRound size={18} />
                                     <input
@@ -194,7 +326,7 @@ export default function Register() {
                                         name="first_name"
                                         type="text"
                                         autoComplete="given-name"
-                                        placeholder="Văn A"
+                                        placeholder={t("common.basicInfo.firstName.placeholder")}
                                         value={userData.first_name}
                                         onChange={updateUserData}
                                         maxLength={100}
@@ -205,6 +337,7 @@ export default function Register() {
                         </div>
 
                         <label htmlFor="register-email">Email</label>
+
                         <div className="auth-input-wrap">
                             <Mail size={18} />
                             <input
@@ -212,23 +345,25 @@ export default function Register() {
                                 name="email"
                                 type="email"
                                 autoComplete="email"
-                                placeholder="you@example.com"
+                                placeholder="name@example.com"
                                 value={userData.email}
                                 onChange={updateUserData}
                                 required
                             />
                         </div>
 
-                        <label htmlFor="register-password">Mật khẩu</label>
+                        <label htmlFor="register-password">
+                            {t("common.basicInfo.password.label")}
+                        </label>
+
                         <div className="auth-input-wrap">
                             <LockKeyhole size={18} />
-
                             <input
                                 id="register-password"
                                 name="password"
                                 type={show.password ? "text" : "password"}
                                 autoComplete="new-password"
-                                placeholder="Ít nhất 8 ký tự"
+                                placeholder={t("common.basicInfo.password.placeholder")}
                                 value={userData.password}
                                 onChange={updateUserData}
                                 minLength={8}
@@ -238,29 +373,33 @@ export default function Register() {
                             <button
                                 type="button"
                                 className="auth-password-toggle"
-                                onClick={() =>
-                                    updateShow("password", (prev) => !prev)
+                                onClick={() => updateShow("password")}
+                                aria-label={
+                                    show.password
+                                        ? t("common.basicInfo.password.hide")
+                                        : t("common.basicInfo.password.show")
                                 }
-                                aria-label={show.password ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
                                 aria-pressed={show.password}
                             >
-                                {show.password ? <EyeOff size={18} /> : <Eye size={18} />}
+                                {show.password
+                                    ? <EyeOff size={18} />
+                                    : <Eye size={18} />}
                             </button>
                         </div>
 
                         <label htmlFor="register-confirm-password">
-                            Xác nhận mật khẩu
+                            {t("common.basicInfo.confirmPassword.label")}
                         </label>
+
                         <div className="auth-input-wrap">
                             <LockKeyhole size={18} />
-
                             <input
                                 id="register-confirm-password"
                                 name="confirmPassword"
                                 type={show.confirm ? "text" : "password"}
                                 autoComplete="new-password"
-                                placeholder="Nhập lại mật khẩu"
-                                value={userData.confirm}
+                                placeholder={t("common.basicInfo.confirmPassword.placeholder")}
+                                value={userData.confirmPassword}
                                 onChange={updateUserData}
                                 minLength={8}
                                 required
@@ -269,22 +408,24 @@ export default function Register() {
                             <button
                                 type="button"
                                 className="auth-password-toggle"
-                                onClick={() =>
-                                    updateShow("confirm", (prev) => !prev)
-                                }
+                                onClick={() => updateShow("confirm")}
                                 aria-label={
                                     show.confirm
-                                        ? "Ẩn mật khẩu xác nhận"
-                                        : "Hiện mật khẩu xác nhận"
+                                        ? t("common.basicInfo.confirmPassword.hide")
+                                        : t("common.basicInfo.confirmPassword.show")
                                 }
                                 aria-pressed={show.confirm}
                             >
-                                {show.confirm ? <EyeOff size={18} /> : <Eye size={18} />}
+                                {show.confirm
+                                    ? <EyeOff size={18} />
+                                    : <Eye size={18} />}
                             </button>
                         </div>
 
                         {error && (
-                            <div className="auth-error" role="alert">{error}</div>
+                            <div className="auth-error" role="alert">
+                                {error}
+                            </div>
                         )}
 
                         <button
@@ -292,13 +433,18 @@ export default function Register() {
                             type="submit"
                             disabled={loading}
                         >
-                            {loading ? "Đang tạo tài khoản..." : "Tạo tài khoản"}
+                            {loading
+                                ? t("register.submitting")
+                                : t("register.submit")}
                             {!loading && <ArrowRight size={18} />}
                         </button>
                     </form>
 
                     <p className="auth-switch">
-                        Đã có tài khoản? <Link to="/login">Đăng nhập</Link>
+                        {t("register.haveAccount")}{" "}
+                        <Link to="/login">
+                            {t("register.loginLink")}
+                        </Link>
                     </p>
                 </div>
             </section>

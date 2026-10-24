@@ -1,5 +1,7 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import {
     AtSign,
     CalendarDays,
@@ -13,7 +15,6 @@ import {
     Save,
     ShieldCheck,
     UserRound,
-    X,
     Smartphone,
     Monitor,
     ChevronRight,
@@ -30,22 +31,7 @@ import "./Profile.css";
 import userService from "../../services/userSerivce";
 import Modal from "../../components/ui/Modal";
 import Message from "../../components/ui/Message";
-
-function formatDate(value) {
-    if (!value) return "Chưa cập nhật";
-
-    const date = new Date(value);
-
-    if (Number.isNaN(date.getTime())) {
-        return "Chưa cập nhật";
-    }
-
-    return new Intl.DateTimeFormat("vi-VN", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-    }).format(date);
-}
+import formatDate from "../../utils/formatDate";
 
 function getInitials(user) {
     const name = user?.full_name?.trim();
@@ -62,7 +48,7 @@ function getInitials(user) {
     return user?.username?.slice(0, 2).toUpperCase() || "HH";
 }
 
-function ProfileInfo({ icon: Icon, label, value }) {
+function ProfileInfo({ icon: Icon, label, value, fallback }) {
     return (
         <div className="profile-info">
             <span className="profile-info__icon">
@@ -70,9 +56,12 @@ function ProfileInfo({ icon: Icon, label, value }) {
             </span>
 
             <div className="profile-info__content">
-                <span className="profile-info__label">{label}</span>
+                <span className="profile-info__label">
+                    {label}
+                </span>
+
                 <span className="profile-info__value">
-                    {value || "Chưa cập nhật"}
+                    {value || fallback}
                 </span>
             </div>
         </div>
@@ -83,7 +72,7 @@ function SecurityItem({
     icon: Icon,
     title,
     description,
-    status = "Chưa thiết lập",
+    status,
     disabled = true,
     onClick,
 }) {
@@ -116,6 +105,13 @@ export default function Profile() {
     useDocumentTitle();
 
     const navigate = useNavigate();
+    const { t, i18n } = useTranslation();
+
+    const language = (
+        i18n.resolvedLanguage ||
+        i18n.language ||
+        "vi"
+    ).split("-")[0];
 
     const {
         user,
@@ -164,7 +160,10 @@ export default function Profile() {
             await loadUser();
             setIsEditing(false);
         } catch (error) {
-            showMessage("danger", error.message || "Không thể tải lại thông tin tài khoản.");
+            showMessage(
+                "danger",
+                error.message || t("profile.refreshError")
+            );
         } finally {
             setRefreshing(false);
         }
@@ -189,8 +188,12 @@ export default function Profile() {
             email: formData.email.trim(),
         };
 
-        if (!payload.first_name || !payload.last_name || !payload.email) {
-            showMessage("danger", "Vui lòng nhập đầy đủ thông tin.");
+        if (
+            !payload.first_name ||
+            !payload.last_name ||
+            !payload.email
+        ) {
+            showMessage("danger", t("profile.fillRequired"));
             return;
         }
 
@@ -201,9 +204,16 @@ export default function Profile() {
             await loadUser();
 
             setIsEditing(false);
-        } catch (error) {
-            showMessage("danger", error.message || "Không thể cập nhật thông tin cá nhân.");
 
+            showMessage(
+                "success",
+                t("profile.updateSuccess")
+            );
+        } catch (error) {
+            showMessage(
+                "danger",
+                error.message || t("profile.updateError")
+            );
         } finally {
             setSaving(false);
         }
@@ -217,21 +227,29 @@ export default function Profile() {
     if (userLoading || !user) {
         return (
             <main className="profile-loading">
-                <RefreshCw size={22} className="profile-spin" />
-                <span>Đang tải hồ sơ...</span>
+                <RefreshCw
+                    size={22}
+                    className="profile-spin"
+                />
+
+                <span>{t("profile.loadingProfile")}</span>
             </main>
         );
     }
+
+    const fullName =
+        user.full_name ||
+        `${user.last_name || ""} ${user.first_name || ""}`.trim();
+
+    const dateFallback = t("profile.notUpdated");
 
     return (
         <main className="profile-page">
             <div className="profile-container">
                 <header className="profile-heading">
                     <div>
-                        <h1>Hồ sơ cá nhân</h1>
-                        <p>
-                            Quản lý thông tin cá nhân và bảo mật HomeHub.
-                        </p>
+                        <h1>{t("profile.title")}</h1>
+                        <p>{t("profile.description")}</p>
                     </div>
 
                     <div className="profile-heading__actions">
@@ -245,7 +263,9 @@ export default function Profile() {
                             disabled={saving}
                             onClick={refresh}
                         >
-                            {refreshing ? "Đang tải..." : "Làm mới"}
+                            {refreshing
+                                ? t("common.loading")
+                                : t("common.refresh")}
                         </Button>
 
                         <Button
@@ -257,14 +277,18 @@ export default function Profile() {
                             disabled={refreshing || saving}
                             onClick={() => setIsEditing(true)}
                         >
-                            Chỉnh sửa hồ sơ
+                            {t("profile.edit")}
                         </Button>
                     </div>
                 </header>
 
                 {(message?.text || userError) && (
                     <Message
-                        variant={message?.text ? message.type : "danger"}
+                        variant={
+                            message?.text
+                                ? message.type
+                                : "danger"
+                        }
                         onClose={() => setMessage(null)}
                         message={message?.text || userError}
                     />
@@ -276,11 +300,7 @@ export default function Profile() {
                     </div>
 
                     <div className="profile-overview__content">
-                        <h2>
-                            {user.full_name ||
-                                `${user.last_name || ""} ${user.first_name || ""}`.trim() ||
-                                user.username}
-                        </h2>
+                        <h2>{fullName || user.username}</h2>
 
                         <p>
                             <AtSign size={15} />
@@ -290,28 +310,36 @@ export default function Profile() {
                         <div className="profile-badges">
                             <span
                                 className={`profile-badge ${user.is_active
-                                    ? "profile-badge--active"
-                                    : "profile-badge--inactive"
+                                        ? "profile-badge--active"
+                                        : "profile-badge--inactive"
                                     }`}
                             >
                                 <span className="profile-badge__dot" />
+
                                 {user.is_active
-                                    ? "Đang hoạt động"
-                                    : "Đã vô hiệu hóa"}
+                                    ? t("profile.active")
+                                    : t("profile.inactive")}
                             </span>
 
                             {user.is_superuser && (
                                 <span className="profile-badge profile-badge--admin">
                                     <ShieldCheck size={14} />
-                                    Quản trị viên
+                                    {t("common.admin")}
                                 </span>
                             )}
                         </div>
                     </div>
 
                     <div className="profile-member">
-                        <span>THÀNH VIÊN TỪ</span>
-                        <strong>{formatDate(user.created_at)}</strong>
+                        <span>{t("profile.memberSince")}</span>
+
+                        <strong>
+                            {formatDate(
+                                user.created_at,
+                                language,
+                                dateFallback
+                            )}
+                        </strong>
                     </div>
                 </section>
 
@@ -323,31 +351,33 @@ export default function Profile() {
                             </span>
 
                             <div>
-                                <h3>Thông tin cá nhân</h3>
-                                <p>Thông tin cơ bản của tài khoản.</p>
+                                <h3>{t("profile.personalInfo")}</h3>
+                                <p>
+                                    {t("profile.personalInfoDescription")}
+                                </p>
                             </div>
                         </div>
 
                         <div className="profile-info-list">
                             <ProfileInfo
                                 icon={UserRound}
-                                label="Họ và tên"
-                                value={
-                                    user.full_name ||
-                                    `${user.last_name || ""} ${user.first_name || ""}`.trim()
-                                }
+                                label={t("profile.fullName")}
+                                value={fullName}
+                                fallback={dateFallback}
                             />
 
                             <ProfileInfo
                                 icon={AtSign}
-                                label="Tên đăng nhập"
+                                label={t("common.basicInfo.username.label")}
                                 value={user.username}
+                                fallback={dateFallback}
                             />
 
                             <ProfileInfo
                                 icon={Mail}
-                                label="Địa chỉ email"
+                                label="Email"
                                 value={user.email}
+                                fallback={dateFallback}
                             />
                         </div>
                     </section>
@@ -359,42 +389,56 @@ export default function Profile() {
                             </span>
 
                             <div>
-                                <h3>Tài khoản</h3>
-                                <p>Trạng thái và thông tin hệ thống.</p>
+                                <h3>{t("profile.account")}</h3>
+                                <p>
+                                    {t("profile.accountDescription")}
+                                </p>
                             </div>
                         </div>
 
                         <div className="profile-info-list">
                             <ProfileInfo
                                 icon={KeyRound}
-                                label="Loại tài khoản"
+                                label={t("profile.accountType")}
                                 value={
                                     user.is_superuser
-                                        ? "Quản trị viên"
-                                        : "Người dùng"
+                                        ? t("common.admin")
+                                        : t("common.user")
                                 }
+                                fallback={dateFallback}
                             />
 
                             <ProfileInfo
                                 icon={CheckCircle2}
-                                label="Trạng thái"
+                                label={t("profile.status")}
                                 value={
                                     user.is_active
-                                        ? "Đang hoạt động"
-                                        : "Đã vô hiệu hóa"
+                                        ? t("profile.active")
+                                        : t("profile.inactive")
                                 }
+                                fallback={dateFallback}
                             />
 
                             <ProfileInfo
                                 icon={CalendarDays}
-                                label="Ngày tạo tài khoản"
-                                value={formatDate(user.created_at)}
+                                label={t("profile.createdAt")}
+                                value={formatDate(
+                                    user.created_at,
+                                    language,
+                                    dateFallback
+                                )}
+                                fallback={dateFallback}
                             />
 
                             <ProfileInfo
                                 icon={Clock3}
-                                label="Cập nhật lần cuối"
-                                value={formatDate(user.updated_at)}
+                                label={t("profile.updatedAt")}
+                                value={formatDate(
+                                    user.updated_at,
+                                    language,
+                                    dateFallback
+                                )}
+                                fallback={dateFallback}
                             />
                         </div>
                     </section>
@@ -407,71 +451,77 @@ export default function Profile() {
                         </span>
 
                         <div>
-                            <h3>Bảo mật tài khoản</h3>
-                            <p>
-                                Các thiết lập giúp bảo vệ tài khoản HomeHub.
-                            </p>
+                            <h3>{t("profile.security")}</h3>
+                            <p>{t("profile.securityDescription")}</p>
                         </div>
                     </div>
 
                     <div className="profile-security-list">
                         <SecurityItem
                             icon={KeyRound}
-                            title="Đổi mật khẩu"
-                            description="Cập nhật mật khẩu để bảo vệ tài khoản."
+                            title={t("profile.changePassword")}
+                            description={t(
+                                "profile.changePasswordDescription"
+                            )}
+                            status={t("profile.notConfigured")}
                         />
 
                         <SecurityItem
                             icon={ShieldCheck}
-                            title="Xác thực hai yếu tố (2FA)"
-                            description="Thêm một lớp xác minh khi đăng nhập."
-                            status="Sắp có"
+                            title={t("profile.twoFactor")}
+                            description={t(
+                                "profile.twoFactorDescription"
+                            )}
+                            status={t("profile.comingSoon")}
                         />
 
                         <SecurityItem
                             icon={Monitor}
-                            title="Thiết bị và phiên đăng nhập"
-                            description="Xem thiết bị đang đăng nhập và đăng xuất từ xa."
-                            status="Sắp có"
+                            title={t("profile.devicesSessions")}
+                            description={t(
+                                "profile.devicesSessionsDescription"
+                            )}
+                            status={t("profile.comingSoon")}
                         />
 
                         <SecurityItem
                             icon={History}
-                            title="Lịch sử bảo mật"
-                            description="Theo dõi đăng nhập và các thay đổi quan trọng."
-                            status="Sắp có"
+                            title={t("profile.securityHistory")}
+                            description={t(
+                                "profile.securityHistoryDescription"
+                            )}
+                            status={t("profile.comingSoon")}
                         />
 
                         <SecurityItem
                             icon={Bell}
-                            title="Thông báo bảo mật"
-                            description="Nhận cảnh báo khi phát hiện hoạt động bất thường."
-                            status="Sắp có"
+                            title={t("profile.securityNotifications")}
+                            description={t(
+                                "profile.securityNotificationsDescription"
+                            )}
+                            status={t("profile.comingSoon")}
                         />
 
                         <SecurityItem
                             icon={Smartphone}
-                            title="Phương thức khôi phục"
-                            description="Chuẩn bị cách lấy lại quyền truy cập tài khoản."
-                            status="Sắp có"
+                            title={t("profile.recoveryMethods")}
+                            description={t(
+                                "profile.recoveryMethodsDescription"
+                            )}
+                            status={t("profile.comingSoon")}
                         />
                     </div>
 
                     <div className="profile-security-note">
                         <ShieldCheck size={18} />
-                        <p>
-                            Không chia sẻ mật khẩu, token truy cập hoặc dữ liệu
-                            xác thực nhạy cảm trên trang hồ sơ.
-                        </p>
+                        <p>{t("profile.securityNote")}</p>
                     </div>
                 </section>
 
                 <section className="profile-logout-card">
                     <div className="profile-logout-card__text">
-                        <h3>Đăng xuất khỏi HomeHub</h3>
-                        <p>
-                            Kết thúc phiên sử dụng trên thiết bị này.
-                        </p>
+                        <h3>{t("profile.logoutTitle")}</h3>
+                        <p>{t("profile.logoutDescription")}</p>
                     </div>
 
                     <Button
@@ -483,16 +533,18 @@ export default function Profile() {
                         onClick={onLogout}
                         outline
                     >
-                        Đăng xuất
+                        {t("common.logout")}
                     </Button>
                 </section>
 
                 <Modal
                     isOpen={isEditing}
-                    onClose={() => setIsEditing(false)}
-                    eyebrow="ACCOUNT SETTINGS"
-                    title="Chỉnh sửa hồ sơ"
-                    description="Cập nhật thông tin cá nhân của bạn."
+                    onClose={() => {
+                        if (!saving) setIsEditing(false);
+                    }}
+                    eyebrow={t("profile.accountSettings")}
+                    title={t("profile.editTitle")}
+                    description={t("profile.editDescription")}
                     size="md"
                     isLoading={saving}
                     footer={
@@ -504,7 +556,7 @@ export default function Profile() {
                                 disabled={saving}
                                 onClick={() => setIsEditing(false)}
                             >
-                                Hủy
+                                {t("common.cancel")}
                             </Button>
 
                             <Button
@@ -516,7 +568,9 @@ export default function Profile() {
                                 disabled={saving}
                                 startIcon={<Save size={16} />}
                             >
-                                {saving ? "Đang lưu..." : "Lưu thay đổi"}
+                                {saving
+                                    ? t("common.saving")
+                                    : t("common.saveChanges")}
                             </Button>
                         </>
                     }
@@ -528,11 +582,13 @@ export default function Profile() {
                     >
                         <div className="profile-edit-form__row">
                             <Input
-                                label="Họ"
+                                label={t("common.basicInfo.lastName.label")}
                                 name="last_name"
                                 value={formData.last_name}
                                 onChange={handleChange}
-                                placeholder="Nhập họ"
+                                placeholder={t(
+                                    "common.basicInfo.lastName.placeholder"
+                                )}
                                 autoComplete="family-name"
                                 required
                                 disabled={saving}
@@ -540,11 +596,13 @@ export default function Profile() {
                             />
 
                             <Input
-                                label="Tên"
+                                label={t("common.basicInfo.firstName.label")}
                                 name="first_name"
                                 value={formData.first_name}
                                 onChange={handleChange}
-                                placeholder="Nhập tên"
+                                placeholder={t(
+                                    "common.basicInfo.firstName.placeholder"
+                                )}
                                 autoComplete="given-name"
                                 required
                                 disabled={saving}
