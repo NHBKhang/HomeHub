@@ -18,11 +18,11 @@ import {
     Wifi,
 } from "lucide-react";
 
-import useDocumentTitle from "../../hooks/useDocuments";
+import useDocumentTitle from "../../../hooks/useDocuments";
 import "./Settings.css";
-import { useTheme } from "../../contexts/ThemeContext";
-import Button from "../../components/ui/Button";
-import Message from "../../components/ui/Message";
+import { useTheme } from "../../../contexts/ThemeContext";
+import Button from "../../../components/ui/Button";
+import Message from "../../../components/ui/Message";
 
 const defaultSettings = {
     theme: "light",

@@ -23,15 +23,15 @@ import {
     Bell,
 } from "lucide-react";
 
-import { useUser } from "../../contexts/UserContext";
-import useDocumentTitle from "../../hooks/useDocuments";
-import Button from "../../components/ui/Button";
-import Input from "../../components/ui/Input";
+import { useUser } from "../../../contexts/UserContext";
+import useDocumentTitle from "../../../hooks/useDocuments";
+import Button from "../../../components/ui/Button";
+import Input from "../../../components/ui/Input";
 import "./Profile.css";
-import userService from "../../services/userSerivce";
-import Modal from "../../components/ui/Modal";
-import Message from "../../components/ui/Message";
-import formatDate from "../../utils/formatDate";
+import userService from "../../../services/userSerivce";
+import Modal from "../../../components/ui/Modal";
+import Message from "../../../components/ui/Message";
+import formatDate from "../../../utils/formatDate";
 
 function getInitials(user) {
     const name = user?.full_name?.trim();
@@ -542,7 +542,7 @@ export default function Profile() {
                     onClose={() => {
                         if (!saving) setIsEditing(false);
                     }}
-                    eyebrow={t("profile.accountSettings")}
+                    eyebrow={t("pages.profile")}
                     title={t("profile.editTitle")}
                     description={t("profile.editDescription")}
                     size="md"

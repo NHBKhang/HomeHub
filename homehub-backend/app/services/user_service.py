@@ -1,21 +1,20 @@
+from datetime import datetime, timedelta, timezone
+import jwt
+from jwt.exceptions import InvalidTokenError, PyJWTError
+from pwdlib import PasswordHash
+from sqlalchemy import or_
+from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy.orm import Session
-from sqlalchemy import or_
-from pwdlib import PasswordHash
 from app.models.user import User
+from app.models.refresh_token import RefreshToken
 from app.schemas.user import UserCreate, UserUpdate
-from app.core.security import verify_password, create_access_token
+from app.core.security import verify_password, create_access_token, create_refresh_token, hash_refresh_token
 from app.core.config import settings
-from datetime import timedelta
 from app.db.session import get_db
-from jwt.exceptions import InvalidTokenError
-import jwt
 
 password_hash = PasswordHash.recommended()
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
-
 
 def create_user_service(db: Session, user_data: UserCreate) -> User:
     username = user_data.username.strip()
@@ -60,32 +59,84 @@ def create_user_service(db: Session, user_data: UserCreate) -> User:
     return user
 
 
-def authenticate_user(db: Session, username: str, password: str, ):
+def authenticate_user_service(db: Session,username: str,password: str):
     user = db.query(User).filter(User.username == username).first()
 
-    if not user:
-        return None, None
+    if not user or not verify_password(password, user.hashed_password) or not user.is_active:
+        return None, None, None
 
-    if not verify_password(password, user.hashed_password):
-        return None, None
+    access_token = create_access_token(user.id)
+    refresh_token = create_refresh_token(user.id)
 
-    if not user.is_active:
-        return None, None
-
-    access_token = create_access_token(
-        subject=str(user.id),
-        expires_delta=timedelta(
-            minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
+    refresh_token_record = RefreshToken(
+        user_id=user.id,
+        token_hash=hash_refresh_token(refresh_token),
+        expires_in=(
+            datetime.now(timezone.utc)
+            + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
         ),
     )
 
-    return user, access_token
+    db.add(refresh_token_record)
+    db.commit()
+
+    return user, access_token, refresh_token
 
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def refresh_access_token_service(db: Session, token: str) -> str:
+    try:
+        payload = jwt.decode(
+            token,
+            settings.SECRET_KEY,
+            algorithms=[settings.ALGORITHM],
+        )
+
+        if payload.get("type") != "refresh":
+            raise ValueError("Invalid token type")
+
+        user_id = int(payload["sub"])
+
+    except (PyJWTError, ValueError, TypeError, KeyError):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Refresh token không hợp lệ hoặc đã hết hạn.",
+        )
+
+    token_hash = hash_refresh_token(token)
+
+    token_record = (
+        db.query(RefreshToken)
+        .filter(
+            RefreshToken.user_id == user_id,
+            RefreshToken.token_hash == token_hash,
+            RefreshToken.revoked_at.is_(None),
+        ).first()
+    )
+
+    if not token_record or token_record.expires_in <= datetime.now(timezone.utc):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Refresh token đã hết hạn hoặc bị thu hồi.",
+        )
+
+    user = db.get(User, user_id)
+
+    if not user or not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Tài khoản không tồn tại hoặc đã bị vô hiệu hóa.",
+        )
+
+    return create_access_token(user.id)
+
+
+def get_current_user_service(
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(get_db),
+) -> type[User]:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Token không hợp lệ hoặc đã hết hạn",
+        detail="Token không hợp lệ hoặc đã hết hạn.",
         headers={"WWW-Authenticate": "Bearer"},
     )
 
@@ -101,10 +152,12 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
         if user_id is None:
             raise credentials_exception
 
-    except InvalidTokenError:
+        user_id = int(user_id)
+
+    except (InvalidTokenError, TypeError, ValueError):
         raise credentials_exception
 
-    user = db.query(User).filter(User.id == int(user_id)).first()
+    user = db.query(User).filter(User.id == user_id).first()
 
     if user is None or not user.is_active:
         raise credentials_exception
@@ -112,10 +165,10 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     return user
 
 
-def update_user_profile(
-        db: Session,
-        current_user: User,
-        profile_data: UserUpdate,
+def update_user_service(
+    db: Session,
+    current_user: User,
+    profile_data: UserUpdate,
 ) -> User:
     update_data = profile_data.model_dump(exclude_unset=True)
 
@@ -125,7 +178,6 @@ def update_user_profile(
             detail="Bạn chưa cung cấp thông tin cần cập nhật.",
         )
 
-    # Kiểm tra email
     if "email" in update_data:
         email = update_data["email"]
 
@@ -135,7 +187,7 @@ def update_user_profile(
                 detail="Email không được để trống.",
             )
 
-        email = str(email)
+        email = str(email).strip().lower()
 
         existing_user = (
             db.query(User)
@@ -154,14 +206,11 @@ def update_user_profile(
 
         update_data["email"] = email
 
-    # Chỉ cho phép cập nhật các trường hồ sơ
     allowed_fields = {"first_name", "last_name", "email"}
 
     for field, value in update_data.items():
-        if field not in allowed_fields:
-            continue
-
-        setattr(current_user, field, value)
+        if field in allowed_fields:
+            setattr(current_user, field, value)
 
     try:
         db.commit()
@@ -174,3 +223,7 @@ def update_user_profile(
         )
 
     return current_user
+
+
+def get_users_service(db: Session) -> list[type[User]]:
+    return db.query(User).order_by(User.id.desc()).all()

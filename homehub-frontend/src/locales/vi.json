@@ -19,6 +19,8 @@
         "refresh": "Làm mới",
         "saveChanges": "Lưu thay đổi",
         "saving": "Đang lưu...",
+        "system": "Hệ thống",
+        "requireAuth": "Đang kiểm tra tài khoản...",
         "basicInfo": 
         {
             "username": 
@@ -61,6 +63,7 @@
         "devices": "Thiết bị",
         "tasks": "Công việc",
         "expenses": "Chi tiêu",
+        "users": "Người dùng",
         "profile": "Hồ sơ",
         "settings": "Cài đặt",
         "defaultPage": "Trang"

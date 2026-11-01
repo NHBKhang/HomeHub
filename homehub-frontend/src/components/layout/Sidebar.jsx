@@ -12,6 +12,7 @@ import {
     LogOut,
     ChevronUp,
     UserRound,
+    Users,
 } from "lucide-react";
 
 import "./styles/Sidebar.css";
@@ -26,6 +27,10 @@ const menuItems = [
 const systemItems = [
     { label: "profile", path: "/profile", icon: UserRound },
     { label: "settings", path: "/settings", icon: Settings },
+];
+
+const adminItems = [
+    { label: "users", path: "/users", icon: Users },
 ];
 
 function getInitials(name = "") {
@@ -63,13 +68,72 @@ export default function Sidebar({ user, loading, onLogout }) {
                 </span>
             </NavLink>
 
-            <div className="sidebar-section">
-                <p className="sidebar-section__label">
-                    {t("sidebar.workspace")}
-                </p>
+            <div className="sidebar-menu">
+                <div className="sidebar-section">
+                    <p className="sidebar-section__label">
+                        {t("sidebar.workspace")}
+                    </p>
 
-                <nav className="sidebar-nav">
-                    {menuItems.map(({ label, path, icon: Icon, end }) => (
+                    <nav className="sidebar-nav">
+                        {menuItems.map(({ label, path, icon: Icon, end }) => (
+                            <NavLink
+                                key={path}
+                                to={path}
+                                end={end}
+                                className={({ isActive }) =>
+                                    `sidebar-link${isActive ? " is-active" : ""}`
+                                }
+                            >
+                                <span className="sidebar-link__icon">
+                                    <Icon size={19} strokeWidth={1.9} />
+                                </span>
+
+                                <span className="sidebar-link__label">
+                                    {t(`pages.${label}`)}
+                                </span>
+
+                                <span className="sidebar-link__indicator" />
+                            </NavLink>
+                        ))}
+                    </nav>
+                </div>
+
+                {user?.is_superuser === true && (
+                    <div className="sidebar-section sidebar-section--admin">
+                        <p className="sidebar-section__label">
+                            {t("common.admin")}
+                        </p>
+
+                        <nav className="sidebar-nav">
+                            {adminItems.map(({ label, path, icon: Icon }) => (
+                                <NavLink
+                                    key={path}
+                                    to={path}
+                                    className={({ isActive }) =>
+                                        `sidebar-link${isActive ? " is-active" : ""}`
+                                    }
+                                >
+                                    <span className="sidebar-link__icon">
+                                        <Icon size={19} strokeWidth={1.9} />
+                                    </span>
+
+                                    <span className="sidebar-link__label">
+                                        {t(`pages.${label}`)}
+                                    </span>
+
+                                    <span className="sidebar-link__indicator" />
+                                </NavLink>
+                            ))}
+                        </nav>
+                    </div>
+                )}
+
+                <div className="sidebar-section sidebar-section--settings">
+                    <p className="sidebar-section__label">
+                        {t("common.system")}
+                    </p>
+
+                    {systemItems.map(({ label, path, icon: Icon, end }) => (
                         <NavLink
                             key={path}
                             to={path}
@@ -89,34 +153,7 @@ export default function Sidebar({ user, loading, onLogout }) {
                             <span className="sidebar-link__indicator" />
                         </NavLink>
                     ))}
-                </nav>
-            </div>
-
-            <div className="sidebar-section sidebar-section--settings">
-                <p className="sidebar-section__label">
-                    {t("sidebar.system")}
-                </p>
-
-                {systemItems.map(({ label, path, icon: Icon, end }) => (
-                    <NavLink
-                        key={path}
-                        to={path}
-                        end={end}
-                        className={({ isActive }) =>
-                            `sidebar-link${isActive ? " is-active" : ""}`
-                        }
-                    >
-                        <span className="sidebar-link__icon">
-                            <Icon size={19} strokeWidth={1.9} />
-                        </span>
-
-                        <span className="sidebar-link__label">
-                            {t(`pages.${label}`)}
-                        </span>
-
-                        <span className="sidebar-link__indicator" />
-                    </NavLink>
-                ))}
+                </div>
             </div>
 
             <div className="sidebar-bottom">

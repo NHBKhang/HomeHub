@@ -19,6 +19,8 @@
         "refresh": "Refresh",
         "saveChanges": "Save Changes",
         "saving": "Saving...",
+        "system": "System",
+        "requireAuth": "Verifying account...",
         "basicInfo": 
         {
             "username": 
@@ -61,6 +63,7 @@
         "devices": "Devices",
         "tasks": "Tasks",
         "expenses": "Expenses",
+        "users": "Users",
         "profile": "Profile",
         "settings": "Settings",
         "defaultPage": "Page"

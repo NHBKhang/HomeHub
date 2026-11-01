@@ -1,16 +1,15 @@
 import { createBrowserRouter } from "react-router-dom";
-
-import AppLayout from "./components/layout/AppLayout";
+import RequireAuth from "./pages/Auth/RequireAuth";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Devices from "./pages/Devices/Devices";
 import Tasks from "./pages/Tasks/Tasks";
 import Expenses from "./pages/Expenses/Expenses";
-import Settings from "./pages/Settings/Settings";
 import NotFound from "./pages/NotFound/NotFound";
-import RequireAuth from "./pages/Auth/RequireAuth";
-import Profile from "./pages/Profile/Profile";
+import Settings from "./pages/System/Settings/Settings";
+import Profile from "./pages/System/Profile/Profile";
+import Users from "./pages/Admin/Users/Users";
 
 const router = createBrowserRouter([
     {
@@ -49,6 +48,16 @@ const router = createBrowserRouter([
                 path: "settings",
                 element: <Settings />,
             }
+        ],
+    },
+    {
+        path: "/",
+        element: <RequireAuth requiredRole="admin" />,
+        children: [
+            {
+                path: "users",
+                element: <Users />,
+            },
         ],
     },
     {

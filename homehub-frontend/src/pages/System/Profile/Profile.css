@@ -16,7 +16,8 @@
 }
 
 .profile-container {
-    width: min(100% - 20px, 1200px);
+    width: 100%;
+    max-width: 1600px;
     margin: 0 auto;
 }
 

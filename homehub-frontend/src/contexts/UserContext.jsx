@@ -1,3 +1,4 @@
+
 import {
     createContext,
     useCallback,
@@ -5,6 +6,7 @@ import {
     useEffect,
     useState,
 } from "react";
+
 import userService from "../services/userSerivce";
 
 const UserContext = createContext(null);
@@ -20,6 +22,7 @@ export function UserProvider({ children }) {
 
         try {
             const data = await userService.getCurrentUser();
+
             setUser(data);
             return data;
         } catch (error) {
@@ -27,7 +30,8 @@ export function UserProvider({ children }) {
 
             if (error.status !== 401) {
                 setUserError(
-                    error.message || "Không thể tải thông tin tài khoản."
+                    error.message ||
+                    "Không thể tải thông tin tài khoản."
                 );
             }
 
@@ -37,10 +41,13 @@ export function UserProvider({ children }) {
         }
     }, []);
 
-    const logout = useCallback(() => {
-        userService.logout();
-        setUser(null);
-        setUserError(null);
+    const logout = useCallback(async () => {
+        try {
+            await userService.logout();
+        } finally {
+            setUser(null);
+            setUserError(null);
+        }
     }, []);
 
     useEffect(() => {
@@ -60,7 +67,8 @@ export function UserProvider({ children }) {
 
                     if (error.status !== 401) {
                         setUserError(
-                            error.message || "Không thể kết nối máy chủ."
+                            error.message ||
+                            "Không thể kết nối máy chủ."
                         );
                     }
                 }
