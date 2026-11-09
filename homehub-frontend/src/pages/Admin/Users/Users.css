@@ -1,0 +1,238 @@
+.users-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+    color: var(--text);
+}
+
+/* Header */
+.users-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.users-heading h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 750;
+    letter-spacing: -1px;
+}
+
+.users-heading p {
+    margin: 9px 0 0;
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.users-refresh-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--card-bg);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.users-refresh-button:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.users-refresh-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.is-spinning {
+    animation: users-spin 1s linear infinite;
+}
+
+@keyframes users-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Statistics */
+.summary-statistics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+}
+
+/* Table section */
+.users-table-section {
+    min-width: 0;
+    overflow: hidden;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+}
+
+.users-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+/* User identity */
+.users-identity {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.users-avatar {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(104, 95, 224, 0.12);
+    color: var(--primary);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.users-identity div:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.users-identity strong {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.users-identity span {
+    color: var(--text-secondary);
+    font-size: 11px;
+}
+
+/* Role & status */
+.users-role,
+.users-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.users-role.admin {
+    color: #7567e8;
+    background: rgba(117, 103, 232, 0.12);
+}
+
+.users-role.member {
+    color: var(--text-secondary);
+    background: rgba(122, 117, 168, 0.12);
+}
+
+.users-status.active {
+    color: #159b68;
+    background: rgba(21, 155, 104, 0.1);
+}
+
+.users-status.inactive {
+    color: #dc5555;
+    background: rgba(220, 85, 85, 0.1);
+}
+
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+/* Error */
+.users-error {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 20px;
+    color: #dc5555;
+    background: rgba(220, 85, 85, 0.08);
+    font-size: 13px;
+}
+
+.users-error button {
+    border: none;
+    background: transparent;
+    color: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+    .users-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 900px) {
+    .summary-statistics {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .users-heading {
+        align-items: flex-start;
+    }
+
+    .users-heading h1 {
+        font-size: 20px;
+    }
+
+    .users-refresh-button {
+        padding: 9px;
+    }
+
+    .users-refresh-button span {
+        display: none;
+    }
+
+    .users-toolbar {
+        padding: 14px;
+    }
+
+    .summary-statistics {
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 14px;
+        gap: 10px;
+    }
+
+    .stat-card-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .stat-card-content h3 {
+        font-size: 20px;
+    }
+}

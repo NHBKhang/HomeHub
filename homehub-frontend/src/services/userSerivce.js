@@ -1,5 +1,5 @@
 
-import { apiRequest } from "./api";
+import { apiRequest, apiRequestAuth } from "./api";
 
 const AUTH_URL = "/api/v1/auth";
 const USERS_URL = "/api/v1/users";
@@ -45,10 +45,7 @@ export const userService = {
         }
 
         if (data.refresh_token) {
-            localStorage.setItem(
-                REFRESH_TOKEN_KEY,
-                data.refresh_token
-            );
+            localStorage.setItem(REFRESH_TOKEN_KEY, data.refresh_token);
         }
 
         return data;
@@ -58,7 +55,7 @@ export const userService = {
         const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
 
         if (!refreshToken) {
-            this.logout();
+            await this.logout();
             return null;
         }
 
@@ -75,47 +72,50 @@ export const userService = {
             }
 
             if (data.refresh_token) {
-                localStorage.setItem(
-                    REFRESH_TOKEN_KEY,
-                    data.refresh_token
-                );
+                localStorage.setItem(REFRESH_TOKEN_KEY, data.refresh_token);
             }
 
             return data.access_token ?? null;
         } catch (error) {
-            this.logout();
+            await this.logout();
             throw error;
         }
     },
 
     async getCurrentUser() {
-        const token = localStorage.getItem(TOKEN_KEY);
-
-        if (!token) {
+        if (!localStorage.getItem(TOKEN_KEY)) {
             return null;
         }
 
-        return apiRequest(`${USERS_URL}/me`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        return apiRequestAuth(`${USERS_URL}/me`);
     },
 
     async updateProfile(profileData) {
-        const token = localStorage.getItem(TOKEN_KEY);
-
-        if (!token) {
-            return null;
-        }
-
-        return apiRequest(`${USERS_URL}/me`, {
+        return apiRequestAuth(`${USERS_URL}/me`, {
             method: "PATCH",
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
             body: JSON.stringify(profileData),
         });
+    },
+
+
+    getUsers: (params = {}) => {
+        const query = new URLSearchParams();
+
+        query.append("page", params.page || 1);
+        query.append("page_size", params.page_size || 10);
+
+        if (params.kw) {
+            query.append("kw", params.kw);
+        }
+
+        if (
+            params.filters &&
+            Object.keys(params.filters).length > 0
+        ) {
+            query.append("filters", JSON.stringify(params.filters));
+        }
+
+        return apiRequestAuth(`${USERS_URL}/?${query.toString()}`);
     },
 
     async logout() {

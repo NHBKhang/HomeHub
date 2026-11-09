@@ -1,0 +1,67 @@
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    justify-content: end;
+    flex-wrap: wrap;
+}
+
+.filter-group button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 9px 13px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.filter-group button:hover:not(:disabled) {
+    background: var(--hover-bg);
+    color: var(--text-primary);
+}
+
+.filter-group button.active {
+    border-color: var(--border);
+    background: var(--card-bg);
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.filter-group button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.filter-count {
+    font-size: 11px;
+    opacity: 0.75;
+}
+
+.filter-group-select select {
+    height: 42px;
+    padding: 0 32px 0 12px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    outline: none;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.filter-group-select select:focus {
+    border-color: var(--primary);
+}
+
+.filter-group-select select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

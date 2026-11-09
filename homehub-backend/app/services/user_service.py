@@ -2,16 +2,18 @@ from datetime import datetime, timedelta, timezone
 import jwt
 from jwt.exceptions import InvalidTokenError, PyJWTError
 from pwdlib import PasswordHash
-from sqlalchemy import or_
+from sqlalchemy import or_, func, case
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from app.models.user import User
 from app.models.refresh_token import RefreshToken
 from app.schemas.user import UserCreate, UserUpdate
+from app.services.common.filter_service import apply_filters
 from app.core.security import verify_password, create_access_token, create_refresh_token, hash_refresh_token
 from app.core.config import settings
 from app.db.session import get_db
+from math import ceil
 
 password_hash = PasswordHash.recommended()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
@@ -225,5 +227,72 @@ def update_user_service(
     return current_user
 
 
-def get_users_service(db: Session) -> list[type[User]]:
-    return db.query(User).order_by(User.id.desc()).all()
+def get_users_service(
+    db: Session,
+    page: int = 1,
+    page_size: int = 10,
+    kw: str | None = None,
+    filters: dict | None = None,
+):
+    base_query = db.query(User)
+    query = base_query
+
+    if kw and kw.strip():
+        keyword = f"%{kw.strip()}%"
+
+        query = query.filter(
+            or_(
+                User.username.ilike(keyword),
+                User.email.ilike(keyword),
+                User.first_name.ilike(keyword),
+                User.last_name.ilike(keyword),
+            )
+        )
+
+    allowed_filters = {
+        "is_active": User.is_active,
+        "is_superuser": User.is_superuser,
+    }
+
+    query = apply_filters(
+        query=query,
+        filters=filters,
+        allowed_filters=allowed_filters,
+    )
+
+    total = query.count()
+
+    statistics = base_query.with_entities(
+        func.count(User.id).label("total"),
+        func.sum(
+            case((User.is_active.is_(True), 1), else_=0)
+        ).label("active"),
+        func.sum(
+            case((User.is_active.is_(False), 1), else_=0)
+        ).label("inactive"),
+        func.sum(
+            case((User.is_superuser.is_(True), 1), else_=0)
+        ).label("admins"),
+    ).first()
+
+    users = (
+        query
+        .order_by(User.id.desc())
+        .offset((page - 1) * page_size)
+        .limit(page_size)
+        .all()
+    )
+
+    return {
+        "items": users,
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "total_pages": ceil(total / page_size) if total else 0,
+        "statistics": {
+            "total": statistics.total or 0,
+            "active": statistics.active or 0,
+            "inactive": statistics.inactive or 0,
+            "admins": statistics.admins or 0,
+        },
+    }

@@ -239,5 +239,46 @@
         "homeButton": "Về trang tổng quan",
         "backButton": "Quay lại",
         "tagline": "Cuộc sống thông minh, đơn giản hơn."
+    },
+    "users": 
+    {
+        "title": "Quản lý người dùng",
+        "description": "Quản lý tài khoản và quyền truy cập hệ thống.",
+        "searchPlaceholder": "Tìm username, email, họ tên...",
+        "active": "Đang hoạt động",
+        "inactive": "Đã khóa",
+        "filters": 
+        {
+            "all": "Tất cả"
+        },
+        "statistics": 
+        {
+            "total": "Tổng người dùng",
+            "admins": "Quản trị viên"
+        },
+        "table": 
+        {
+            "user": "Người dùng",
+            "role": "Vai trò"
+        },
+        "roles": 
+        {
+            "admin": "Quản trị viên",
+            "member": "Thành viên"
+        },
+        "empty": 
+        {
+            "default": "Chưa có người dùng nào.",
+            "filtered": "Không tìm thấy người dùng phù hợp."
+        },
+        "errors": 
+        {
+            "loadFailed": "Không thể tải danh sách người dùng."
+        }
+    },
+    "table": 
+    {
+        "status": "Trạng thái",
+        "createdAt": "Ngày tạo"
     }
 }

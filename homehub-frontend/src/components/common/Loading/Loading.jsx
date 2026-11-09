@@ -1,4 +1,4 @@
-import "./styles/Loading.css";
+import "./Loading.css";
 
 function LoadingItem({ className = "" }) {
     return <div className={`skeleton ${className}`} />;

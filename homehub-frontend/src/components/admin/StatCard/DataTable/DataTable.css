@@ -1,0 +1,167 @@
+.data-table-container {
+    width: 100%;
+    min-width: 0;
+}
+
+.data-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+.data-table th {
+    padding: 14px 18px;
+    color: var(--text-secondary);
+    background: var(--table-header-bg, var(--card-bg));
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.data-table td {
+    padding: 15px 18px;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.data-table tbody tr:hover {
+    background: var(--hover-bg, rgba(128, 128, 128, 0.04));
+}
+
+.data-table-loading {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 25px;
+}
+
+.data-table-loading span {
+    display: block;
+    height: 10px;
+    width: 22%;
+    border-radius: 6px;
+    background: var(--border);
+    animation: data-table-pulse 1.4s ease-in-out infinite;
+}
+
+.data-table-loading span:nth-child(2) {
+    width: 30%;
+}
+
+.data-table-loading span:nth-child(3) {
+    width: 16%;
+}
+
+.data-table-empty {
+    padding: 40px 16px;
+    color: var(--text-secondary);
+    text-align: center;
+    white-space: normal;
+}
+
+/* Footer */
+.data-table-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+}
+
+.data-table-footer-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.data-table-footer select {
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    font-size: 13px;
+}
+
+.data-table-pagination {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.data-table-pagination button {
+    min-width: 34px;
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--card-bg);
+    color: var(--text-primary);
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.data-table-pagination button:hover:not(:disabled) {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.data-table-pagination button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.data-table-pagination span {
+    padding: 0 6px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.data-table-pagination strong {
+    color: var(--text-primary);
+}
+
+@keyframes data-table-pulse {
+
+    0%,
+    100% {
+        opacity: 0.45;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 650px) {
+    .data-table-footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .data-table-footer-info {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .data-table-pagination {
+        width: 100%;
+        justify-content: space-between;
+    }
+}

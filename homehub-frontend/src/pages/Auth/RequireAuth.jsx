@@ -1,5 +1,5 @@
 
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useUser } from "../../contexts/UserContext";
 import { useTranslation } from "react-i18next";
 import AppLayout from "../../components/layout/AppLayout";

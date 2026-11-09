@@ -240,5 +240,46 @@
         "homeButton": "Back to dashboard",
         "backButton": "Go back",
         "tagline": "Smart living, made simple."
+    },
+    "users": 
+    {
+        "title": "User Management",
+        "description": "Manage accounts and system access rights.",
+        "searchPlaceholder": "Search username, email, full name...",
+        "active": "Active",
+        "inactive": "Disabled",
+        "filters": 
+        {
+            "all": "All"
+        },
+        "statistics": 
+        {
+            "total": "Total users",
+            "admins": "Admins"
+        },
+        "table": 
+        {
+            "user": "User",
+            "role": "Role"
+        },
+        "roles": 
+        {
+            "admin": "Admin",
+            "member": "Member"
+        },
+        "empty": 
+        {
+            "default": "No users here.",
+            "filtered": "No matching user found."
+        },
+        "errors": 
+        {
+            "loadFailed": "Unable to load the list of users."
+        }
+    },
+    "table": 
+    {
+        "status": "Status",
+        "createdAt": "Created at"
     }
 }

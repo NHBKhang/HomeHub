@@ -31,3 +31,9 @@ class UserUpdate(BaseModel):
     first_name: str | None = Field(default=None, max_length=100)
     last_name: str | None = Field(default=None, max_length=100)
     email: EmailStr | None = None
+
+class UserStatistics(BaseModel):
+    total: int
+    active: int
+    inactive: int
+    admins: int

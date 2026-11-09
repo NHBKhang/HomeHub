@@ -1,5 +1,5 @@
 import { MonitorSmartphone, CheckSquare, Wallet } from "lucide-react";
-import StatCard from "../../components/common/StatCard";
+import StatCard from "../../../components/common/StatCard";
 
 import "./Dashboard.css";
 
